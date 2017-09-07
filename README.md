@@ -1,6 +1,6 @@
 # elasticsearch-docker-beat
 
-Welcome to elasticsearch-docker-beat v0.0.2
+Welcome to elasticsearch-docker-beat
 
 This beat handle both docker logs and metrics in a Swarm cluster context adding meta data as stack, service name to logs/metrics.
 It listen Docker containers events and for each new started container open logs and metrics streams to publish the events.
@@ -46,7 +46,7 @@ or directly use the docker hub image, pulling it:
 docker pull axway/elasticsearch-docker-beat:latest
 ```
 
-Available tags are: latest, 0.0.2
+Available tags are: latest
 
 
 
