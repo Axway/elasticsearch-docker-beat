@@ -59,7 +59,7 @@ docker node inspect self > /dev/null 2>&1 || docker swarm inspect > /dev/null 2>
 docker network ls | grep aNetwork || (echo "> Creating overlay network 'aNetwork'" && docker network create -d overlay aNetwork)
 ```
 
-Create dbeat names Docker volume
+Create dbeat names Docker volume, if not exist
 
 ```
 Docker volume create dbeat
@@ -76,7 +76,7 @@ docker service create --with-registry-auth --network aNetwork --name dbeat \
   --mode global \
   --mount source=dbeat,destination=/containers \
   --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
-  Axway/elasticsearch-docker-beat:latest
+  axway/elasticsearch-docker-beat:latest
 ```
 
 To run elasticsearch-docker-beat as a stack, using the stack file:
@@ -118,7 +118,7 @@ To run elasticsearch-docker-beat as a simple container
 docker run --name dbeat \
   --mount source=dbeat,destination=/containers \
   --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
-  Axway/elasticsearch-docker-beat:latest
+  axway/elasticsearch-docker-beat:latest
 ```
 
 
