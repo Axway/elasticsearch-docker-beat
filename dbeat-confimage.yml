@@ -31,8 +31,6 @@ dbeat:
   # period of time in second the logs position is saved
   logs_position_save_period: 10
 
-  #custom ADI label name
-  custom_adi_label_name : io.adi.customlabel
 
 
 #================================ General =====================================

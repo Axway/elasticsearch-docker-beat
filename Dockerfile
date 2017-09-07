@@ -10,15 +10,15 @@ RUN apk update && apk upgrade && \
     apk -v add git make bash go@community musl-dev curl && \
     go version
 
-COPY ./ /go/src/github.com/freignat91/dbeat
+COPY ./ /go/src/github.com/Axway/elasticsearch-docker-beat
 
-RUN cd $GOPATH/src/github.com/freignat91/dbeat && \
+RUN cd $GOPATH/src/github.com/Axway/elasticsearch-docker-beat && \
     make && \
-    echo dbeat built && \
+    echo elasticsearch-docker-beat built && \
     mkdir -p /etc/dbeat && \
-    cp $GOPATH/src/github.com/freignat91/dbeat/dbeat /etc/dbeat && \
-    cp $GOPATH/src/github.com/freignat91/dbeat/dbeat-confimage.yml /etc/dbeat/dbeat.yml && \
-    cp $GOPATH/src/github.com/freignat91/dbeat/*.json /etc/dbeat && \
+    cp $GOPATH/src/github.com/Axway/elasticsearch-docker-beat/elasticsearch-docker-beat /etc/dbeat/dbeat && \
+    cp $GOPATH/src/github.com/Axway/elasticsearch-docker-beat/dbeat-confimage.yml /etc/dbeat/dbeat.yml && \
+    cp $GOPATH/src/github.com/Axway/elasticsearch-docker-beat/*.json /etc/dbeat && \
     chmod +x /etc/dbeat/dbeat && \
     cd $GOPATH && \
     rm -rf $GOPATH/src && \

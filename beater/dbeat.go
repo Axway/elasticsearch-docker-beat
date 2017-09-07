@@ -5,12 +5,12 @@ import (
 	"log"
 	"time"
 
+	"github.com/Axway/elasticsearch-docker-beat/config"
 	"github.com/docker/docker/client"
 	"github.com/elastic/beats/libbeat/beat"
 	"github.com/elastic/beats/libbeat/common"
 	"github.com/elastic/beats/libbeat/logp"
 	"github.com/elastic/beats/libbeat/publisher"
-	"github.com/freignat91/dbeat/config"
 )
 
 // dbeat the amp beat struct

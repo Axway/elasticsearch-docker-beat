@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/freignat91/dbeat/beater"
+	"github.com/Axway/elasticsearch-docker-beat/beater"
 	"github.com/elastic/beats/libbeat/beat"
 )
 

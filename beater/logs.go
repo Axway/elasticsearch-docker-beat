@@ -88,19 +88,19 @@ func (a *dbeat) startReadingLogs(ID string, data *ContainerData) {
 		}
 
 		event := common.MapStr{
-			"@timestamp":      common.Time(timestamp),
-			"type":            "logs",
-			"container_id":    ID,
-			"container_name":  data.name,
-			"container_state": data.state,
-			"service_name":    data.serviceName,
-			"service_id":      data.serviceID,
-			"task_id":         data.taskID,
-			"stack_name":      data.stackName,
-			"node_id":         data.nodeID,
-			"role":            data.role,
-			"customADI":       data.customADILabel,
-			"message":         slog,
+			"@timestamp":        common.Time(timestamp),
+			"type":              "logs",
+			"container_id":      ID,
+			"container_name":    data.name,
+			"container_state":   data.state,
+			"service_name":      data.serviceName,
+			"service_id":        data.serviceID,
+			"task_id":           data.taskID,
+			"stack_name":        data.stackName,
+			"node_id":           data.nodeID,
+			"role":              data.role,
+			"axway-target-flow": data.axwayTargetFlow,
+			"message":           slog,
 		}
 		a.client.PublishEvent(event)
 		a.periodicDateSave(data, date)

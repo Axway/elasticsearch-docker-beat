@@ -56,10 +56,10 @@
       description: >
         dedicated amp field: amp role
 
-    - name: "customADI"
+    - name: "axway-target-flow"
       type: text
       description: >
-        custom ADI field
+        custom Axway traceablility field
 
     - name: "message"
       type: text

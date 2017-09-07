@@ -3,4 +3,4 @@ docker service create --with-registry-auth --network ampcore_infra --name dbeat 
     --mode global \
     --mount type=volume,source=dbeat,target=/containers \
     --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
-    freignat91/dbeat
+    Axway/elasticsearch-docker-beat
