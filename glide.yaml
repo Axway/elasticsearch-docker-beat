@@ -1,4 +1,4 @@
-package: github.com/freignat91/dbeat
+package: github.com/Axway/elasticsearch-docker-beat
 import:
 - package: github.com/docker/docker
   version: ^1.13.0

@@ -9,11 +9,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Axway/elasticsearch-docker-beat/config"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/events"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
-	"github.com/freignat91/dbeat/config"
 )
 
 const (
@@ -35,7 +35,7 @@ type ContainerData struct {
 	pid              int
 	state            string
 	health           string
-	customADILabel   string
+	axwayTargetFlow  string
 	logsStream       io.ReadCloser
 	logsReadError    bool
 	metricsStream    io.ReadCloser
@@ -165,12 +165,8 @@ func (a *dbeat) addContainer(ID string) {
 			if data.stackName == "" {
 				data.stackName = "noStack"
 			}
-			fmt.Printf("custom config: %s\n", a.config.CustomADILabelName)
-			fmt.Printf("labels: %v\n", labels)
-			if a.config.CustomADILabelName != "" {
-				fmt.Printf("found custom label: %s\n", a.getMapValue(labels, a.config.CustomADILabelName))
-				data.customADILabel = a.getMapValue(labels, a.config.CustomADILabelName)
-			}
+			fmt.Printf("axway-target-flow: %s\n", a.getMapValue(labels, "axway-target-flow"))
+			data.axwayTargetFlow = a.getMapValue(labels, "axway-target-flow")
 			data.role = a.getMapValue(labels, "io.amp.role")
 			if inspect.State.Health != nil {
 				data.health = inspect.State.Health.Status

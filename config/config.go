@@ -20,7 +20,6 @@ type Config struct {
 	Memory             bool          `config:"memory"`
 	IO                 bool          `config:"io"`
 	CPU                bool          `config:"cpu"`
-	CustomADILabelName string        `config:"custom_adi_label_name"`
 }
 
 //DefaultConfig dbeat default config

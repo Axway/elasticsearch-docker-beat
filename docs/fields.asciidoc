@@ -404,11 +404,11 @@ dedicated amp field: amp role
 
 
 [float]
-=== customADI
+=== axway-target-flow
 
 type: text
 
-custom ADI field
+custom Axway traceablility field
 
 
 [float]

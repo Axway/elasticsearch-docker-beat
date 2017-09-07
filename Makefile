@@ -1,5 +1,5 @@
 BEAT_NAME=dbeat
-BEAT_PATH=github.com/freignat91/dbeat
+BEAT_PATH=github.com/Axway/elasticsearch-docker-beat
 BEAT_GOPATH=$(firstword $(subst :, ,${GOPATH}))
 BEAT_URL=https://${BEAT_PATH}
 SYSTEM_TESTS=false
@@ -26,14 +26,14 @@ copy-vendor:
 
 .PHONY: create-image
 create-image:
-	rm -f dbeat
-	docker build -t freignat91/dbeat:latest .
+	rm -f elasticsearch-docker-beat
+	docker build -t axway/elasticsearch-docker-beat:latest .
 
 .PHONY: create-image-test
 create-image-test:
-		rm -f dbeat
-		docker build -t freignat91/dbeat:test .
-		
+	rm -f elasticsearch-docker-beat
+	docker build -t axway/elasticsearch-docker-beat:test .
+
 .PHONY: update-deps
 update-deps:
 

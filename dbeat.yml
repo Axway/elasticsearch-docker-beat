@@ -31,9 +31,6 @@ dbeat:
   io: false
   cpu: false
 
-  #custom ADI label name
-  custom_adi_label_name : io.adi.customlabel
-
 #================================ General =====================================
 
 # The name of the shipper that publishes the network data. It can be used to group

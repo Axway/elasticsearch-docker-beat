@@ -30,6 +30,3 @@ dbeat:
   memory: false
   io: false
   cpu: false
-
-  #custom ADI label name
-  custom_adi_label_name : io.adi.customlabel
