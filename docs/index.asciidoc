@@ -1,0 +1,5 @@
+= dbeat Docs
+
+Welcome to the dbeat documentation.
+
+

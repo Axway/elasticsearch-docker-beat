@@ -1,0 +1,92 @@
+################### dbeat Configuration Example #########################
+
+############################# dbeat ######################################
+
+dbeat:
+  # Defines how often the stat is sent to the output
+  period: 3s
+
+  # Defines the docker url
+  docker_url: ${DOCKER_SOCKET:unix:///var/run/docker.sock}
+
+  # TLS switch
+  tls: ${DOCKER_ENABLE_TLS:false}
+
+  # Path to the ca file
+  ca_path: ${DOCKER_CA_PATH:}
+
+  # Path to the cert file
+  cert_path: ${DOCKER_CERT_PATH:}
+
+  # Path to the key file
+  key_path: ${DOCKER_KEY_PATH:}
+
+  # event types enqabled or not
+  logs: true
+  net: false
+  memory: false
+  io: false
+  cpu: false
+
+  # period of time in second the logs position is saved
+  logs_position_save_period: 10
+
+  #custom ADI label name
+  custom_adi_label_name : io.adi.customlabel
+
+
+#================================ General =====================================
+
+# The name of the shipper that publishes the network data. It can be used to group
+# all the transactions sent by a single shipper in the web interface.
+name: amp
+
+# The tags of the shipper are included in their own field with each
+# transaction published.
+#tags: ["service-X", "web-tier"]
+
+# Optional fields that you can specify to add additional information to the
+# output.
+#fields:
+#  env: staging
+
+#================================ Outputs =====================================
+
+# Configure what outputs to use when sending the data collected by the beat.
+# Multiple outputs may be used.
+
+#-------------------------- Elasticsearch output ------------------------------
+output.elasticsearch:
+  # Array of hosts to connect to.
+  hosts: "elasticsearch:9200"
+
+  # Optional protocol and basic auth credentials.
+  #protocol: "https"
+  #username: "elastic"
+  #password: "changeme"
+
+#----------------------------- Logstash output --------------------------------
+#output.logstash:
+  # The Logstash hosts
+  #hosts: ["localhost:5044"]
+
+  # Optional SSL. By default is off.
+  # List of root certificates for HTTPS server verifications
+  #ssl.certificate_authorities: ["/etc/pki/root/ca.pem"]
+
+  # Certificate for SSL client authentication
+  #ssl.certificate: "/etc/pki/client/cert.pem"
+
+  # Client Certificate Key
+  #ssl.key: "/etc/pki/client/cert.key"
+
+#================================ Logging =====================================
+
+# Sets log level. The default log level is info.
+# Available log levels are: critical, error, warning, info, debug
+#logging.level: debug
+
+# At debug level, you can selectively enable logging only for some components.
+# To enable all selectors use ["*"]. Examples of other selectors are "beat",
+# "publish", "service".
+#logging.selectors: ["*"]

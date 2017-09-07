@@ -1,0 +1,262 @@
+
+- key: logs
+  title: logs
+  description: >
+    Docker containers logs.
+  fields:
+
+    - name: "container_id"
+      type: keyword
+      required: true
+      description: >
+        Docker container id.
+
+    - name: "container_name"
+      type: keyword
+      description: >
+        The Docker regular container name
+
+    - name: "container_short_name"
+      type: keyword
+      description: >
+        Sort container name
+
+    - name: "service_state"
+      type: keyword
+      description: >
+        The container state
+
+    - name: "service_name"
+      type: keyword
+      description: >
+        The Docker service name of the container, if exist
+
+    - name: "service_id"
+      type: keyword
+      description: >
+        The Docker service id of the container, if exist
+
+    - name: "task_id"
+      type: keyword
+      description: >
+        The Docker task id of the container
+
+    - name: "stack_name"
+      type: keyword
+      description: >
+        The Docker stack name of the container, if exist
+
+    - name: "node_id"
+      type: keyword
+      description: >
+        The Docker node id on which the container has been launched
+
+    - name: "role"
+      type: keyword
+      description: >
+        dedicated amp field: amp role
+
+    - name: "customADI"
+      type: text
+      description: >
+        custom ADI field
+
+    - name: "message"
+      type: text
+      description: >
+        the log message
+
+- key: mem
+  title: memory metrics
+  description: >
+    Docker mem metrics
+  fields:
+    - name: failcnt
+      type: long
+      description: >
+        TODO
+
+    - name: limit
+      type: long
+      description: >
+        Limit of memory (max memory available) in KBytes.
+
+    - name: maxUsage
+      type: long
+      description: >
+        Maximum memory used by the container in KBytes.
+        - name: usage
+      type: long
+      description: >
+        Current memory consumption in KBytes.
+
+    - name: usage_p
+      type: double
+      description: >
+        Amount of memory used by the container in percents between 0.0 and 1.0.
+
+- key: net
+  title: network metrics
+  description: >
+    Gather container metrics about network (rx/tx)
+  fields:
+    - name: totalBytes
+      type: long
+      description: >
+        Total number of bytes received and transmitted since the last event.
+
+    - name: rxBytes
+      type: long
+      description: >
+        Number number of bytes received since the last event.
+
+    - name: rxDropped
+      type: long
+      description: >
+        Number received dropped packets since the last event.
+
+    - name: rxErrors
+      type: long
+      description: >
+        Number number of errors received since the last event.
+
+    - name: rxPackets
+      type: long
+      description: >
+        Number number of packets received since the last event.
+
+    - name: txBytes
+      type: long
+      description: >
+        Number number of bytes transmitted since the last event.
+
+    - name: txDropped
+      type: long
+      description: >
+        Number transmitted dropped packets since the last event.
+
+    - name: txErrors
+      type: long
+      description: >
+        Number number of errors transmitted since the last event.
+
+    - name: txPackets
+      type: long
+      description: >
+        Number of packets transmitted since the last event.
+
+- key: io
+  title: io metrics
+  description: >
+    Gather disk usage of the current container.
+  fields:
+    - name: read
+      type: long
+      description: >
+        It represents amount of bytes read by the container on disk(s) during the period.
+    - name: write
+      type: long
+      description: >
+        It represents amount of bytes written by the container on disk(s) during the period.
+    - name: total
+      type: long
+      description: >
+        It represents amount of bytes read and written by the container on disk(s) during the period.
+
+- key: cpu
+  title: cpu metrics
+  description: >
+    Gather cpu consumption of the current container.
+  fields:
+    - name: totalUsage
+      type: double
+      description: >
+        Total cpu consumption in percent.
+        This value can be greater than 100%, depending on the number of available CPUs.
+
+    - name: usageInKernelmode
+      type: double
+      description: >
+        Same as *totalUsage*, but only the Kernel mode consumptions.
+
+    - name: usageInUsermode
+      type: double
+      description: >
+        Same as *totalUsage*, but only the User mode consumptions.
+
+    - name: percpuUsage
+      type: group
+      description: >
+        Detailled cpu consumption per cpu (in percent).
+      fields:
+        - name: cpu0
+          type: double
+
+        - name: cpu1
+          type: double
+
+        - name: cpu2
+          type: double
+
+        - name: cpu3
+          type: double
+
+        - name: cpu4
+          type: double
+
+        - name: cpu5
+          type: double
+
+        - name: cpu6
+          type: double
+
+        - name: cpu7
+          type: double
+
+        - name: cpu8
+          type: double
+
+        - name: cpu9
+          type: double
+
+        - name: cpu10
+          type: double
+
+        - name: cpu11
+          type: double
+
+        - name: cpu12
+          type: double
+
+        - name: cpu13
+          type: double
+
+        - name: cpu14
+          type: double
+
+        - name: cpu15
+          type: double
+
+        - name: cpu16
+          type: double
+
+        - name: cpu17
+          type: double
+
+        - name: cpu18
+          type: double
+
+        - name: cpu19
+          type: double
+
+        - name: cpu20
+          type: double
+
+        - name: cpu21
+          type: double
+
+        - name: cpu22
+          type: double
+
+        - name: cpu23
+          type: double

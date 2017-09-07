@@ -1,0 +1,299 @@
+{
+  "mappings": {
+    "_default_": {
+      "_all": {
+        "norms": {
+          "enabled": false
+        }
+      },
+      "_meta": {
+        "version": "5.3.0"
+      },
+      "date_detection": false,
+      "dynamic_templates": [
+        {
+          "strings_as_keyword": {
+            "mapping": {
+              "ignore_above": 1024,
+              "index": "not_analyzed",
+              "type": "string"
+            },
+            "match_mapping_type": "string"
+          }
+        }
+      ],
+      "properties": {
+        "@timestamp": {
+          "type": "date"
+        },
+        "beat": {
+          "properties": {
+            "hostname": {
+              "ignore_above": 1024,
+              "index": "not_analyzed",
+              "type": "string"
+            },
+            "name": {
+              "ignore_above": 1024,
+              "index": "not_analyzed",
+              "type": "string"
+            },
+            "version": {
+              "ignore_above": 1024,
+              "index": "not_analyzed",
+              "type": "string"
+            }
+          }
+        },
+        "container_id": {
+          "ignore_above": 1024,
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "container_name": {
+          "ignore_above": 1024,
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "container_short_name": {
+          "ignore_above": 1024,
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "customADI": {
+          "index": "analyzed",
+          "norms": {
+            "enabled": false
+          },
+          "type": "string"
+        },
+        "failcnt": {
+          "type": "long"
+        },
+        "fields": {
+          "properties": {}
+        },
+        "limit": {
+          "type": "long"
+        },
+        "maxUsage": {
+          "type": "long"
+        },
+        "message": {
+          "index": "analyzed",
+          "norms": {
+            "enabled": false
+          },
+          "type": "string"
+        },
+        "meta": {
+          "properties": {
+            "cloud": {
+              "properties": {
+                "availability_zone": {
+                  "ignore_above": 1024,
+                  "index": "not_analyzed",
+                  "type": "string"
+                },
+                "instance_id": {
+                  "ignore_above": 1024,
+                  "index": "not_analyzed",
+                  "type": "string"
+                },
+                "machine_type": {
+                  "ignore_above": 1024,
+                  "index": "not_analyzed",
+                  "type": "string"
+                },
+                "project_id": {
+                  "ignore_above": 1024,
+                  "index": "not_analyzed",
+                  "type": "string"
+                },
+                "provider": {
+                  "ignore_above": 1024,
+                  "index": "not_analyzed",
+                  "type": "string"
+                },
+                "region": {
+                  "ignore_above": 1024,
+                  "index": "not_analyzed",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "node_id": {
+          "ignore_above": 1024,
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "percpuUsage": {
+          "properties": {
+            "cpu0": {
+              "type": "double"
+            },
+            "cpu1": {
+              "type": "double"
+            },
+            "cpu10": {
+              "type": "double"
+            },
+            "cpu11": {
+              "type": "double"
+            },
+            "cpu12": {
+              "type": "double"
+            },
+            "cpu13": {
+              "type": "double"
+            },
+            "cpu14": {
+              "type": "double"
+            },
+            "cpu15": {
+              "type": "double"
+            },
+            "cpu16": {
+              "type": "double"
+            },
+            "cpu17": {
+              "type": "double"
+            },
+            "cpu18": {
+              "type": "double"
+            },
+            "cpu19": {
+              "type": "double"
+            },
+            "cpu2": {
+              "type": "double"
+            },
+            "cpu20": {
+              "type": "double"
+            },
+            "cpu21": {
+              "type": "double"
+            },
+            "cpu22": {
+              "type": "double"
+            },
+            "cpu23": {
+              "type": "double"
+            },
+            "cpu3": {
+              "type": "double"
+            },
+            "cpu4": {
+              "type": "double"
+            },
+            "cpu5": {
+              "type": "double"
+            },
+            "cpu6": {
+              "type": "double"
+            },
+            "cpu7": {
+              "type": "double"
+            },
+            "cpu8": {
+              "type": "double"
+            },
+            "cpu9": {
+              "type": "double"
+            }
+          }
+        },
+        "read": {
+          "type": "long"
+        },
+        "role": {
+          "ignore_above": 1024,
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "rxBytes": {
+          "type": "long"
+        },
+        "rxDropped": {
+          "type": "long"
+        },
+        "rxErrors": {
+          "type": "long"
+        },
+        "rxPackets": {
+          "type": "long"
+        },
+        "service_id": {
+          "ignore_above": 1024,
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "service_name": {
+          "ignore_above": 1024,
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "service_state": {
+          "ignore_above": 1024,
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "stack_name": {
+          "ignore_above": 1024,
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "tags": {
+          "ignore_above": 1024,
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "task_id": {
+          "ignore_above": 1024,
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "total": {
+          "type": "long"
+        },
+        "totalBytes": {
+          "type": "long"
+        },
+        "totalUsage": {
+          "type": "double"
+        },
+        "txBytes": {
+          "type": "long"
+        },
+        "txDropped": {
+          "type": "long"
+        },
+        "txErrors": {
+          "type": "long"
+        },
+        "txPackets": {
+          "type": "long"
+        },
+        "usageInKernelmode": {
+          "type": "double"
+        },
+        "usageInUsermode": {
+          "type": "double"
+        },
+        "usage_p": {
+          "type": "double"
+        },
+        "write": {
+          "type": "long"
+        }
+      }
+    }
+  },
+  "order": 0,
+  "settings": {
+    "index.refresh_interval": "5s"
+  },
+  "template": "dbeat-*"
+}

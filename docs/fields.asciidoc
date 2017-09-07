@@ -1,0 +1,539 @@
+
+////
+This file is generated! See _meta/fields.yml and scripts/generate_field_docs.py
+////
+
+[[exported-fields]]
+= Exported Fields
+
+[partintro]
+
+--
+This document describes the fields that are exported by Dbeat. They are
+grouped in the following categories:
+
+* <<exported-fields-beat>>
+* <<exported-fields-cloud>>
+* <<exported-fields-cpu>>
+* <<exported-fields-io>>
+* <<exported-fields-logs>>
+* <<exported-fields-mem>>
+* <<exported-fields-net>>
+
+--
+[[exported-fields-beat]]
+== Beat Fields
+
+Contains common beat fields available in all event types.
+
+
+
+[float]
+=== beat.name
+
+The name of the Beat sending the log messages. If the Beat name is set in the configuration file, then that value is used. If it is not set, the hostname is used. To set the Beat name, use the `name` option in the configuration file.
+
+
+[float]
+=== beat.hostname
+
+The hostname as returned by the operating system on which the Beat is running.
+
+
+[float]
+=== beat.version
+
+The version of the beat that generated this event.
+
+
+[float]
+=== @timestamp
+
+type: date
+
+example: August 26th 2016, 12:35:53.332
+
+format: date
+
+required: True
+
+The timestamp when the event log record was generated.
+
+
+[float]
+=== tags
+
+Arbitrary tags that can be set per Beat and per transaction type.
+
+
+[float]
+=== fields
+
+type: dict
+
+Contains user configurable fields.
+
+
+[[exported-fields-cloud]]
+== Cloud Provider Metadata Fields
+
+Metadata from cloud providers added by the add_cloud_metadata processor.
+
+
+
+[float]
+=== meta.cloud.provider
+
+example: ec2
+
+Name of the cloud provider. Possible values are ec2, gce, or digitalocean.
+
+
+[float]
+=== meta.cloud.instance_id
+
+Instance ID of the host machine.
+
+
+[float]
+=== meta.cloud.machine_type
+
+example: t2.medium
+
+Machine type of the host machine.
+
+
+[float]
+=== meta.cloud.availability_zone
+
+example: us-east-1c
+
+Availability zone in which this host is running.
+
+
+[float]
+=== meta.cloud.project_id
+
+example: project-x
+
+Name of the project in Google Cloud.
+
+
+[float]
+=== meta.cloud.region
+
+Region in which this host is running.
+
+
+[[exported-fields-cpu]]
+== cpu metrics Fields
+
+Gather cpu consumption of the current container.
+
+
+
+[float]
+=== totalUsage
+
+type: double
+
+Total cpu consumption in percent. This value can be greater than 100%, depending on the number of available CPUs.
+
+
+[float]
+=== usageInKernelmode
+
+type: double
+
+Same as *totalUsage*, but only the Kernel mode consumptions.
+
+
+[float]
+=== usageInUsermode
+
+type: double
+
+Same as *totalUsage*, but only the User mode consumptions.
+
+
+[float]
+== percpuUsage Fields
+
+Detailled cpu consumption per cpu (in percent).
+
+
+
+[float]
+=== percpuUsage.cpu0
+
+type: double
+
+[float]
+=== percpuUsage.cpu1
+
+type: double
+
+[float]
+=== percpuUsage.cpu2
+
+type: double
+
+[float]
+=== percpuUsage.cpu3
+
+type: double
+
+[float]
+=== percpuUsage.cpu4
+
+type: double
+
+[float]
+=== percpuUsage.cpu5
+
+type: double
+
+[float]
+=== percpuUsage.cpu6
+
+type: double
+
+[float]
+=== percpuUsage.cpu7
+
+type: double
+
+[float]
+=== percpuUsage.cpu8
+
+type: double
+
+[float]
+=== percpuUsage.cpu9
+
+type: double
+
+[float]
+=== percpuUsage.cpu10
+
+type: double
+
+[float]
+=== percpuUsage.cpu11
+
+type: double
+
+[float]
+=== percpuUsage.cpu12
+
+type: double
+
+[float]
+=== percpuUsage.cpu13
+
+type: double
+
+[float]
+=== percpuUsage.cpu14
+
+type: double
+
+[float]
+=== percpuUsage.cpu15
+
+type: double
+
+[float]
+=== percpuUsage.cpu16
+
+type: double
+
+[float]
+=== percpuUsage.cpu17
+
+type: double
+
+[float]
+=== percpuUsage.cpu18
+
+type: double
+
+[float]
+=== percpuUsage.cpu19
+
+type: double
+
+[float]
+=== percpuUsage.cpu20
+
+type: double
+
+[float]
+=== percpuUsage.cpu21
+
+type: double
+
+[float]
+=== percpuUsage.cpu22
+
+type: double
+
+[float]
+=== percpuUsage.cpu23
+
+type: double
+
+[[exported-fields-io]]
+== io metrics Fields
+
+Gather disk usage of the current container.
+
+
+
+[float]
+=== read
+
+type: long
+
+It represents amount of bytes read by the container on disk(s) during the period.
+
+
+[float]
+=== write
+
+type: long
+
+It represents amount of bytes written by the container on disk(s) during the period.
+
+
+[float]
+=== total
+
+type: long
+
+It represents amount of bytes read and written by the container on disk(s) during the period.
+
+
+[[exported-fields-logs]]
+== logs Fields
+
+Docker containers logs.
+
+
+
+[float]
+=== container_id
+
+type: keyword
+
+required: True
+
+Docker container id.
+
+
+[float]
+=== container_name
+
+type: keyword
+
+The Docker regular container name
+
+
+[float]
+=== container_short_name
+
+type: keyword
+
+Sort container name
+
+
+[float]
+=== service_state
+
+type: keyword
+
+The container state
+
+
+[float]
+=== service_name
+
+type: keyword
+
+The Docker service name of the container, if exist
+
+
+[float]
+=== service_id
+
+type: keyword
+
+The Docker service id of the container, if exist
+
+
+[float]
+=== task_id
+
+type: keyword
+
+The Docker task id of the container
+
+
+[float]
+=== stack_name
+
+type: keyword
+
+The Docker stack name of the container, if exist
+
+
+[float]
+=== node_id
+
+type: keyword
+
+The Docker node id on which the container has been launched
+
+
+[float]
+=== role
+
+type: keyword
+
+dedicated amp field: amp role
+
+
+[float]
+=== customADI
+
+type: text
+
+custom ADI field
+
+
+[float]
+=== message
+
+type: text
+
+the log message
+
+
+[[exported-fields-mem]]
+== memory metrics Fields
+
+Docker mem metrics
+
+
+
+[float]
+=== failcnt
+
+type: long
+
+TODO
+
+
+[float]
+=== limit
+
+type: long
+
+Limit of memory (max memory available) in KBytes.
+
+
+[float]
+=== maxUsage
+
+type: long
+
+Current memory consumption in KBytes.
+
+
+[float]
+=== usage_p
+
+type: double
+
+Amount of memory used by the container in percents between 0.0 and 1.0.
+
+
+[[exported-fields-net]]
+== network metrics Fields
+
+Gather container metrics about network (rx/tx)
+
+
+
+[float]
+=== totalBytes
+
+type: long
+
+Total number of bytes received and transmitted since the last event.
+
+
+[float]
+=== rxBytes
+
+type: long
+
+Number number of bytes received since the last event.
+
+
+[float]
+=== rxDropped
+
+type: long
+
+Number received dropped packets since the last event.
+
+
+[float]
+=== rxErrors
+
+type: long
+
+Number number of errors received since the last event.
+
+
+[float]
+=== rxPackets
+
+type: long
+
+Number number of packets received since the last event.
+
+
+[float]
+=== txBytes
+
+type: long
+
+Number number of bytes transmitted since the last event.
+
+
+[float]
+=== txDropped
+
+type: long
+
+Number transmitted dropped packets since the last event.
+
+
+[float]
+=== txErrors
+
+type: long
+
+Number number of errors transmitted since the last event.
+
+
+[float]
+=== txPackets
+
+type: long
+
+Number of packets transmitted since the last event.
+
+

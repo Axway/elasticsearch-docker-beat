@@ -1,0 +1,16 @@
+package: github.com/freignat91/dbeat
+import:
+- package: github.com/docker/docker
+  version: ^1.13.0
+  subpackages:
+  - api/types
+  - api/types/events
+  - api/types/filters
+  - client
+- package: github.com/elastic/beats
+  version: ^5.2.2
+  subpackages:
+  - libbeat/beat
+  - libbeat/common
+  - libbeat/logp
+  - libbeat/publisher
