@@ -50,17 +50,26 @@ Available tags are: latest, 0.0.2
 
 
 
-### Run
+### Run in swarnm context
 
-Create a 'dbeat' Docker named volume if not exist:
+Create swarm and network `aNetwork' if not exist
+
+```
+docker node inspect self > /dev/null 2>&1 || docker swarm inspect > /dev/null 2>&1 || (echo "> Initializing swarm" && docker swarm init --advertise-addr 127.0.0.1)
+docker network ls | grep aNetwork || (echo "> Creating overlay network 'aNetwork'" && docker network create -d overlay aNetwork)
+```
+
+Create dbeat names Docker volume
 
 ```
 Docker volume create dbeat
 ```
 
-#### dockerhub.com/axway/elasticsearch-docker-beat repo is not yet ready, please use freignat91/dbeat:latest images instead of axway/elasticsearch-docker-beat:latest ones, for now
 
-To run elasticsearch-docker-beat in a docker swarm context:
+#### dockerhub.com/axway/elasticsearch-docker-beat repo is not yet ready, please use freignat91/dbeat:latest image instead of axway/elasticsearch-docker-beat:latest one, for now
+
+
+To run elasticsearch-docker-beat as a single service:
 
 ```
 docker service create --with-registry-auth --network aNetwork --name dbeat \
@@ -70,7 +79,38 @@ docker service create --with-registry-auth --network aNetwork --name dbeat \
   Axway/elasticsearch-docker-beat:latest
 ```
 
-Where the network "aNetwork" is the same than Elasticsearch or Logstash one
+To run elasticsearch-docker-beat as a stack, using the stack file:
+
+```
+version: "3"
+
+networks:
+  default:
+    external:
+      name: aNetwork
+
+volumes:
+  dbeat:
+
+services:
+
+  dbeat:
+    image: axway/elasticsearch-docker-beat:latest
+    volumes:
+      - dbeat:/containers
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      mode: global
+```
+
+the command to launch the stack is:
+
+```
+docker stack up -c [this upper file path] [stackName]
+```
+
+
+### run out of swarm context
 
 To run elasticsearch-docker-beat as a simple container
 
