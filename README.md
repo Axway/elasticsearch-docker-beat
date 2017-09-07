@@ -45,7 +45,8 @@ or directly use the docker hub image, pulling it:
 ```
 docker pull axway/elasticsearch-docker-beat:latest
 ```
-For others tags see: https://hub.docker.com/r/axway/elasticsearch-docker-beat/tags/
+
+Available tags are: latest, 0.0.2
 
 
 
@@ -56,6 +57,8 @@ Create a 'dbeat' Docker named volume if not exist:
 ```
 Docker volume create dbeat
 ```
+
+#### dockerhub.com/axway/elasticsearch-docker-beat repo is not yet ready, please use freignat91/dbeat:latest images instead of axway/elasticsearch-docker-beat:latest ones, for now
 
 To run elasticsearch-docker-beat in a docker swarm context:
 
@@ -77,6 +80,7 @@ docker run --name dbeat \
   --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
   Axway/elasticsearch-docker-beat:latest
 ```
+
 
 ### Update
 
