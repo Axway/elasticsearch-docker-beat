@@ -66,9 +66,6 @@ Docker volume create dbeat
 ```
 
 
-#### dockerhub.com/axway/elasticsearch-docker-beat repo is not yet ready, please use freignat91/dbeat:latest image instead of axway/elasticsearch-docker-beat:latest one, for now
-
-
 To run elasticsearch-docker-beat as a single service:
 
 ```
