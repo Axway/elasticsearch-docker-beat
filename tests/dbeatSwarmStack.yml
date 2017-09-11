@@ -1,0 +1,45 @@
+version: "3"
+
+networks:
+  default:
+    external:
+      name: aNetwork
+
+volumes:
+  dbeat:
+
+services:
+
+  elasticsearch:
+    image: appcelerator/elasticsearch-amp:5.5.0
+    ports:
+      - "9200:9200"
+    deploy:
+      mode: replicated
+      replicas: 1
+
+  dbeat:
+    image: axway/elasticsearch-docker-beat:test
+    networks:
+      default:
+        aliases:
+          - ampbeat
+    volumes:
+      - dbeat:/containers
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      mode: replicated
+      replicas: 1
+
+
+
+  kibana:
+    image: appcelerator/kibana:5.5.0
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    ports:
+      - "50106:5601"
+      - "443:443"
+    deploy:
+      mode: replicated
+      replicas: 1
