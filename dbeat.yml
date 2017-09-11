@@ -25,11 +25,11 @@ dbeat:
   key_path: ${DOCKER_KEY_PATH:}
 
   # event types enqabled or not
-  logs: true
   net: false
   memory: false
   io: false
   cpu: false
+  logs: true
 
 #================================ General =====================================
 

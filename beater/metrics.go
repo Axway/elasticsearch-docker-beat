@@ -51,6 +51,9 @@ func (a *dbeat) startReadingMetrics(ID string, data *ContainerData) {
 		if a.config.CPU {
 			a.publishCPUMetrics(stats, data)
 		}
+		if a.config.Memory || a.config.IO || a.config.Net || a.config.CPU {
+			a.nbMetrics++
+		}
 	}
 }
 

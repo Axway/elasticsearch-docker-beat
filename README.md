@@ -15,6 +15,7 @@ It publishes, memory, net, io, cpu metrics and all logs.
 Build the project is not mandatory, you can use directly the elasticsearch-docker-beat public image on docker hub see 'run' chapter.
 
 Prerequisite:
+- Docker version 17.03.0-ce min installed
 - golang 1.7 min installed
 - glide 0.12 min installed
 
@@ -24,7 +25,7 @@ Clone the repo in the directory $GOPATH/src/github.com/Axway/elasticsearch-docke
  - cd elasticsearch-docker-beat
 
 
-Before building if you can update default configuration using file `dbeat-confimage.yml` and then executing the command:
+Before building if you can update default configuration using file `dbeat-confimage.yml`, see chapter `configuration` and then executing the command:
 ```
 make update
 ```
@@ -48,6 +49,79 @@ docker pull axway/elasticsearch-docker-beat:latest
 
 Available tags are: latest
 
+### configuration
+
+Configuration file is dbeat-confimage.yml. This file is integrated when the image is built
+
+It containts the common beat configuration and some specific settings:
+
+#### output settings
+
+- `net: [true, false]` : default false, compute and send containers network metrics
+- `memory: [true, false]` : default false, compute and send containers memory metrics
+- `io: [true, false]` : default false, compute and send containers disk io metrics
+- `cpu: [true, false]` : default false, compute and send containers cpu metrics
+- `logs: [true, false]` : default true, send containers logs
+- `logs_position_save_period: {duration in second}` : default 10, period of time to save container logs position (to do not re-send all the logs in case of stop/restart)
+
+#### logs multiline setting
+
+Define container per container or globaly for all, or per service or per stack the logs grouping behavior.
+
+```
+logs_multiline:
+    {name1}:
+      applyOn: [container, service, stack]
+      pattern: {a valid regex pattern}
+      negate: [true, false]
+      append: [true, false]
+      activated: [true, false]
+    {name2}:
+      ...
+    default:
+      ...
+
+logs_multiline_max_size: {size}
+```
+where:
+- {name}: mandatory, is the name of the container or service or stack depending on 'applyOn' value, {name} can be equal to 'default' to specific a behavior for all containers
+- applyOn: mandatory, define on which object the {name} value is apply:
+  - if 'container': select the container having the name {name}
+  - if 'service': select all the containers belonging to the service having the name {name}
+  - if 'stack': select all the containers belonging to the stack having the name {name}
+- pattern: mandatory, define the regexp pattern using to evaluation if the log have to be grouped with the previous log or not
+- negate: default false, indicate that the pattern regexp have be negated in the evaluation
+- append: default: true, if true group logs by appending them at the end of the current group, otherwise add them at the beginning of the group.
+- activated: default true, to be able to invalidate the setting without removing the setting values from the configuration file
+- logs_multiline_max_size: default 100000, define the max size of a group in octets
+
+#### sample
+
+```
+# event types enabled or not
+net: false
+memory: false
+io: false
+cpu: false
+logs: true
+
+# period of time in second the logs position is saved
+logs_position_save_period: 5
+
+# logs multiline setting
+logs_multiline:
+    default:
+      pattern: '^[0-9]{4}/[0-9]{2}/[0-9]{2}'
+      negate: true
+    test:
+      applyOn: container
+      pattern: '^[0-9]{4}-[0-9]{2}-[0-9]{2}'
+      negate: true
+    dbeat:
+      applyOn: service
+      pattern: '^\s'
+      negate: true
+```
 
 
 ### Run in swarnm context

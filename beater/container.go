@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"path"
 	"strings"
@@ -23,19 +24,22 @@ const (
 
 //ContainerData data
 type ContainerData struct {
-	name             string
-	ID               string
-	shortName        string
-	serviceName      string
-	serviceID        string
-	stackName        string
-	taskID           string
-	nodeID           string
-	role             string
-	pid              int
-	state            string
-	health           string
-	axwayTargetFlow  string
+	//container metadata
+	name            string
+	ID              string
+	shortName       string
+	serviceName     string
+	serviceID       string
+	stackName       string
+	taskID          string
+	nodeID          string
+	role            string
+	pid             int
+	state           string
+	health          string
+	axwayTargetFlow string
+	//runtime variable
+	tobepurged       bool
 	logsStream       io.ReadCloser
 	logsReadError    bool
 	metricsStream    io.ReadCloser
@@ -43,6 +47,12 @@ type ContainerData struct {
 	previousIOStats  *IOStats
 	previousNetStats *NetStats
 	lastDateSaveTime time.Time
+	lastLog          string
+	sdate            string
+	lastLogTimestamp time.Time
+	lastLogTime      time.Time
+	//container config
+	mlConfig *config.MLConfig
 }
 
 //AgentStart Connect to docker engine, get initial containers list and start the agent
@@ -75,14 +85,16 @@ func (a *dbeat) start(config *config.Config) error {
 //starts logs and metrics stream of eech new started container
 func (a *dbeat) tick() {
 	if a.config.Logs {
-		if a.config.Logs {
-			a.updateLogsStream()
-		}
-		if a.config.Memory || a.config.Net || a.config.IO || a.config.CPU {
-			a.updateMetricsStream()
-		}
-		a.updateEventsStream()
+		log.Printf("logs sent during last period: %d\n", a.nbLogs)
+		a.nbLogs = 0
+		a.updateLogsStream()
 	}
+	if a.config.Memory || a.config.Net || a.config.IO || a.config.CPU {
+		log.Printf("metrics sent during last period: %d\n", a.nbMetrics)
+		a.nbMetrics = 0
+		a.updateMetricsStream()
+	}
+	a.updateEventsStream()
 }
 
 //Verify if the event stream is working, if not start it
@@ -150,7 +162,17 @@ func (a *dbeat) addContainer(ID string) {
 				health:        "",
 				logsStream:    nil,
 				logsReadError: false,
+				tobepurged:    false,
+				lastLog:       "",
+				lastLogTime:   time.Now(),
 			}
+			fmt.Printf("Container %s state: %s\n", data.name, data.state)
+			if data.state == "exited" {
+				return
+			}
+			a.setMultilineSetting(&data)
+			fmt.Printf("Multiline setting: %+v\n", data.mlConfig)
+
 			labels := inspect.Config.Labels
 			//data.serviceName = a.getMapValue(labels, "com.docker.swarm.service.name")
 			data.serviceName = strings.TrimPrefix(labels["com.docker.swarm.service.name"], labels["com.docker.stack.namespace"]+"_")
@@ -183,10 +205,35 @@ func (a *dbeat) addContainer(ID string) {
 	}
 }
 
+// update ContainerData instance concidering the LogsMultiline setting
+func (a *dbeat) setMultilineSetting(data *ContainerData) {
+	if ml, ok := a.MLContainerMap[data.name]; ok {
+		data.mlConfig = ml
+		return
+	}
+	if ml, ok := a.MLServiceMap[data.name]; ok {
+		data.mlConfig = ml
+		return
+	}
+	if ml, ok := a.MLStackMap[data.name]; ok {
+		data.mlConfig = ml
+		return
+	}
+	if a.MLDefault != nil {
+		data.mlConfig = a.MLDefault
+		return
+	}
+	data.mlConfig = &config.MLConfig{Activated: false}
+}
+
 //Suppress a container from the main container map
 func (a *dbeat) removeContainer(ID string) {
 	data, ok := a.containers[ID]
 	if ok {
+		if data.lastLog != "" {
+			a.publishEvent(data, data.lastLogTimestamp, data.lastLog)
+			data.lastLog = ""
+		}
 		fmt.Println("remove container", data.name)
 		delete(a.containers, ID)
 	}
@@ -214,7 +261,6 @@ func (a *dbeat) updateContainer(ID string) {
 
 func (a *dbeat) getMapValue(labelMap map[string]string, name string) string {
 	if val, exist := labelMap[name]; exist {
-		//todo
 		return val
 	}
 	return ""
