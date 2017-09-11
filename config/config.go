@@ -7,30 +7,40 @@ import "time"
 
 // Config dbeat config
 type Config struct {
-	RESTPort           int           `config:"rest_port"`
-	Period             time.Duration `config:"period"`
-	DockerURL          string        `config:"docker_url"`
-	TLS                bool          `config:"tls"`
-	CaPath             string        `config:"ca_path"`
-	CertPath           string        `config:"cert_path"`
-	KeyPath            string        `config:"key_path"`
-	Logs               bool          `config:"logs"`
-	LogsDateSavePeriod int           `config:"logs_position_save_period"`
-	Net                bool          `config:"net"`
-	Memory             bool          `config:"memory"`
-	IO                 bool          `config:"io"`
-	CPU                bool          `config:"cpu"`
+	RESTPort             int                          `config:"rest_port"`
+	Period               time.Duration                `config:"period"`
+	DockerURL            string                       `config:"docker_url"`
+	TLS                  bool                         `config:"tls"`
+	CaPath               string                       `config:"ca_path"`
+	CertPath             string                       `config:"cert_path"`
+	KeyPath              string                       `config:"key_path"`
+	Logs                 bool                         `config:"logs"`
+	LogsDateSavePeriod   int                          `config:"logs_position_save_period"`
+	Net                  bool                         `config:"net"`
+	Memory               bool                         `config:"memory"`
+	IO                   bool                         `config:"io"`
+	CPU                  bool                         `config:"cpu"`
+	LogsMultilineMaxSize int                          `config:"logs_multiline_max_size"`
+	LogsMultiline        map[string]map[string]string `config:"logs_multiline"`
+}
+
+type MLConfig struct {
+	Activated bool
+	Pattern   string
+	Negate    bool
+	Append    bool
 }
 
 //DefaultConfig dbeat default config
 var DefaultConfig = Config{
-	RESTPort:           3000,
-	Period:             3 * time.Second,
-	DockerURL:          "unix:///var/run/docker.sock",
-	Logs:               true,
-	LogsDateSavePeriod: 10,
-	Net:                true,
-	Memory:             true,
-	IO:                 true,
-	CPU:                true,
+	RESTPort:             3000,
+	Period:               10 * time.Second,
+	DockerURL:            "unix:///var/run/docker.sock",
+	Logs:                 true,
+	LogsDateSavePeriod:   10,
+	Net:                  true,
+	Memory:               true,
+	IO:                   true,
+	CPU:                  true,
+	LogsMultilineMaxSize: 100000,
 }
