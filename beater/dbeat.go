@@ -30,6 +30,7 @@ type dbeat struct {
 	MLStackMap          map[string]*config.MLConfig
 	MLServiceMap        map[string]*config.MLConfig
 	MLContainerMap      map[string]*config.MLConfig
+	beaterStarted       bool
 }
 
 // New Creates beater
@@ -96,6 +97,7 @@ func (bt *dbeat) Run(b *beat.Beat) error {
 	if err != nil {
 		log.Fatal(err)
 	}
+	bt.beaterStarted = true
 	logp.Info("dbeat is running! Hit CTRL-C to stop it.")
 
 	for {

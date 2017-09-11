@@ -66,7 +66,7 @@ func (a *dbeat) start(config *config.Config) error {
 	}
 	a.dockerClient = cli
 	fmt.Println("Connected to Docker-engine")
-
+	time.Sleep(10 * time.Second)
 	fmt.Println("Extracting containers list...")
 	a.containers = make(map[string]*ContainerData)
 	ContainerListOptions := types.ContainerListOptions{All: true}
@@ -84,6 +84,9 @@ func (a *dbeat) start(config *config.Config) error {
 
 //starts logs and metrics stream of eech new started container
 func (a *dbeat) tick() {
+	if !a.beaterStarted {
+		return
+	}
 	if a.config.Logs {
 		log.Printf("logs sent during last period: %d\n", a.nbLogs)
 		a.nbLogs = 0

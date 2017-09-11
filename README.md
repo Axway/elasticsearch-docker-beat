@@ -84,7 +84,7 @@ logs_multiline:
 logs_multiline_max_size: {size}
 ```
 where:
-- {name}: mandatory, is the name of the container or service or stack depending on 'applyOn' value, {name} can be equal to 'default' to specific a behavior for all containers
+- {name}: mandatory, is the name of the container or service or stack depending on 'applyOn' value, {name} can be equal to 'default' to define a behavior for all containers
 - applyOn: mandatory, define on which object the {name} value is apply:
   - if 'container': select the container having the name {name}
   - if 'service': select all the containers belonging to the service having the name {name}
@@ -143,14 +143,14 @@ Docker volume create dbeat
 To run elasticsearch-docker-beat as a single service:
 
 ```
-docker service create --with-registry-auth --network aNetwork --name dbeat \
+docker service create --network aNetwork --name dbeat \
   --mode global \
-  --mount source=dbeat,destination=/containers \
+  --mount type=volume,source=dbeat,target=/containers \
   --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
   axway/elasticsearch-docker-beat:latest
 ```
 
-To run elasticsearch-docker-beat as a stack, using the stack file:
+To run elasticsearch-docker-beat as in a stack with elasticsearch and kibana, using the stack file:
 
 ```
 version: "3"
@@ -165,21 +165,73 @@ volumes:
 
 services:
 
+  elasticsearch:
+    image: appcelerator/elasticsearch-amp:5.5.0
+    ports:
+      - "9200:9200"
+    deploy:
+      mode: replicated
+      replicas: 1
+
   dbeat:
     image: axway/elasticsearch-docker-beat:latest
-    volumes:
-      - dbeat:/containers
-      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      default:
+        aliases:
+          - ampbeat
     deploy:
-      mode: global
+      mode: replicated
+      replicas: 1
+
+  kibana:
+    image: appcelerator/kibana:5.5.0
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    ports:
+      - "50106:5601"
+      - "443:443"
+    deploy:
+      mode: replicated
+      replicas: 1
 ```
 
 the command to launch the stack is:
 
 ```
-docker stack up -c [this upper file path] [stackName]
+docker stack up -c [this stack file path] [stackName]
 ```
 
+### run using docker-compose:
+
+To run elasticsearch-docker-beat with elasticsearch and kibana in a co;pose file:
+
+```
+version: '2'
+
+services:
+  elasticsearch:
+    image: appcelerator/elasticsearch-amp:5.5.0
+    ports:
+     - "9200:9200"
+     - "9300:9300"
+
+  kibana:
+    image: appcelerator/kibana:5.5.0
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    ports:
+      - "50106:5601"
+      - "443:443"
+
+  dbeat:
+    image: axway/elasticsearch-docker-beat:latest
+    volumes:
+      - dbeat:/containers
+      - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  dbeat:
+```
 
 ### run out of swarm context
 
@@ -191,7 +243,11 @@ docker run --name dbeat \
   --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
   axway/elasticsearch-docker-beat:latest
 ```
+the command to launch the stack is:
 
+```
+docker-compose  -f [docker-compose file full path] up -d
+```
 
 ### Update
 
