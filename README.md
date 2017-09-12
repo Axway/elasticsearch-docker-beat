@@ -2,10 +2,11 @@
 
 Welcome to elasticsearch-docker-beat
 
-This beat handle both docker logs and metrics in a Swarm cluster context adding meta data as stack, service name to logs/metrics.
-It listen Docker containers events and for each new started container open logs and metrics streams to publish the events.
+This beat handle both docker logs and metrics in a Swarm context or not adding meta data as stack, service name to logs/metrics.
+It listens Docker containers events and for each new started container open logs and metrics streams to publish the events.
 
 It publishes, memory, net, io, cpu metrics and all logs.
+Logs are the ones the containerized applications send to standard output.
 
 
 ## Getting Started with elasticsearch-docker-beat
@@ -70,14 +71,12 @@ Define container per container or globaly for all, or per service or per stack t
 
 ```
 logs_multiline:
-    {name1}:
+    {name}:
       applyOn: [container, service, stack]
-      pattern: {a valid regex pattern}
+      pattern: {a valid regexp pattern}
       negate: [true, false]
       append: [true, false]
       activated: [true, false]
-    {name2}:
-      ...
     default:
       ...
 
@@ -90,10 +89,12 @@ where:
   - if 'service': select all the containers belonging to the service having the name {name}
   - if 'stack': select all the containers belonging to the stack having the name {name}
 - pattern: mandatory, define the regexp pattern using to evaluation if the log have to be grouped with the previous log or not
-- negate: default false, indicate that the pattern regexp have be negated in the evaluation
+- negate: default false, if true, indicate that the negation of pattern regexp is taken as result of the evaluation
 - append: default: true, if true group logs by appending them at the end of the current group, otherwise add them at the beginning of the group.
 - activated: default true, to be able to invalidate the setting without removing the setting values from the configuration file
 - logs_multiline_max_size: default 100000, define the max size of a group in octets
+
+It can have sevaral `{name}:` settings
 
 #### sample
 
@@ -180,6 +181,8 @@ the command to launch the stack is:
 docker stack up -c [this upper file path] [stackName]
 ```
 
+see ./tests/dbeatSwarmStack.yml file to have the full stack including Kibana and Elasticsearch
+
 
 ### run out of swarm context
 
@@ -191,6 +194,33 @@ docker run --name dbeat \
   --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
   axway/elasticsearch-docker-beat:latest
 ```
+
+### run using docker compose
+
+To run elasticsearch-docker-beat using docker-compose, use the compose file:
+
+
+```
+version: '2'
+
+services:
+  dbeat:
+    image: axway/elasticsearch-docker-beat:latest
+    volumes:
+      - dbeat:/containers
+      - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  dbeat:
+```
+
+the command to launch the service is:
+
+```
+docker-compose -p [this upper file path] -d
+```
+
+see ./tests/docker-compose.yml file to have the full stack including Kibana and Elasticsearch
 
 
 ### Update
