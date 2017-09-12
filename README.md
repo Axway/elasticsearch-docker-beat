@@ -2,8 +2,8 @@
 
 Welcome to elasticsearch-docker-beat
 
-This beat handle both docker logs and metrics in a Swarm context or not adding meta data as stack, service name to logs/metrics.
-It listens Docker containers events and for each new started container open logs and metrics streams to publish the events.
+This beat handle both docker logs and metrics in a Swarm context or not, adding meta data as stack, service names to logs/metrics.
+It listens Docker containers events and for each new started container, open logs and metrics streams to publish the events.
 
 It publishes, memory, net, io, cpu metrics and all logs.
 Logs are the ones the containerized applications send to standard output.
