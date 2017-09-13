@@ -68,6 +68,9 @@ func (a *dbeat) publishNetMetrics(stats *types.StatsJSON, data *ContainerData) {
 			"txPackets":  diff.TxPackets,
 		},
 	}
+	for labelName, labelValue := range data.customLabelsMap {
+		event[labelName] = labelValue
+	}
 	a.client.PublishEvent(event)
 }
 

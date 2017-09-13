@@ -50,36 +50,38 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 	for mlName, mlMap := range bt.config.LogsMultiline {
 		ml := &config.MLConfig{Activated: true, Negate: false, Append: true}
 		applyOn := ""
-		for name, value := range mlMap {
-			if strings.ToLower(name) == "activated" {
-				if strings.ToLower(value) == "false" {
-					ml.Activated = false
+		if mlMap != nil {
+			for name, value := range mlMap {
+				if strings.ToLower(name) == "activated" {
+					if strings.ToLower(value) == "false" {
+						ml.Activated = false
+					}
 				}
-			}
-			if strings.ToLower(name) == "applyon" {
-				applyOn = strings.ToLower(value)
-			}
-			if strings.ToLower(name) == "pattern" {
-				ml.Pattern = value
-			}
-			if strings.ToLower(name) == "negate" {
-				if strings.ToLower(value) == "true" {
-					ml.Negate = true
+				if strings.ToLower(name) == "applyon" {
+					applyOn = strings.ToLower(value)
 				}
-			}
-			if strings.ToLower(name) == "append" {
-				if strings.ToLower(value) == "false" {
-					ml.Append = false
+				if strings.ToLower(name) == "pattern" {
+					ml.Pattern = value
 				}
-			}
-			if strings.ToLower(mlName) == "default" {
-				bt.MLDefault = ml
-			} else if applyOn == "container" {
-				bt.MLContainerMap["/"+mlName] = ml
-			} else if applyOn == "service" {
-				bt.MLServiceMap["/"+mlName] = ml
-			} else if applyOn == "stack" {
-				bt.MLStackMap["/"+mlName] = ml
+				if strings.ToLower(name) == "negate" {
+					if strings.ToLower(value) == "true" {
+						ml.Negate = true
+					}
+				}
+				if strings.ToLower(name) == "append" {
+					if strings.ToLower(value) == "false" {
+						ml.Append = false
+					}
+				}
+				if strings.ToLower(mlName) == "default" {
+					bt.MLDefault = ml
+				} else if applyOn == "container" {
+					bt.MLContainerMap["/"+mlName] = ml
+				} else if applyOn == "service" {
+					bt.MLServiceMap["/"+mlName] = ml
+				} else if applyOn == "stack" {
+					bt.MLStackMap["/"+mlName] = ml
+				}
 			}
 		}
 		fmt.Printf("ML apply on %s name=%s: %+v\n", applyOn, mlName, ml)
@@ -99,6 +101,7 @@ func (bt *dbeat) Run(b *beat.Beat) error {
 	}
 	bt.beaterStarted = true
 	logp.Info("dbeat is running! Hit CTRL-C to stop it.")
+	bt.initAPI()
 
 	for {
 		select {

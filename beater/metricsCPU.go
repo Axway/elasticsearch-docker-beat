@@ -56,6 +56,9 @@ func (a *dbeat) publishCPUMetrics(stats *types.StatsJSON, data *ContainerData) {
 			"usageInUsermode":   diff.UsageInUsermode,
 		},
 	}
+	for labelName, labelValue := range data.customLabelsMap {
+		event[labelName] = labelValue
+	}
 	a.client.PublishEvent(event)
 }
 

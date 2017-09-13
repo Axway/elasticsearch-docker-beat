@@ -161,9 +161,11 @@ func (a *dbeat) publishEvent(data *ContainerData, timestamp time.Time, slog stri
 		"task_id":           data.taskID,
 		"stack_name":        data.stackName,
 		"node_id":           data.nodeID,
-		"role":              data.role,
 		"axway-target-flow": data.axwayTargetFlow,
 		"message":           slog,
+	}
+	for labelName, labelValue := range data.customLabelsMap {
+		event[labelName] = labelValue
 	}
 	a.nbLogs++
 	a.client.PublishEvent(event)

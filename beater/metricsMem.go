@@ -26,6 +26,9 @@ func (a *dbeat) publishMemMetrics(stats *types.StatsJSON, data *ContainerData) {
 			"usage_p":  a.getMemUsage(stats),
 		},
 	}
+	for labelName, labelValue := range data.customLabelsMap {
+		event[labelName] = labelValue
+	}
 	a.client.PublishEvent(event)
 }
 

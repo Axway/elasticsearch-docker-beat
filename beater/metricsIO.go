@@ -52,6 +52,9 @@ func (a *dbeat) publishIOMetrics(stats *types.StatsJSON, data *ContainerData) {
 			"total": diff.Totals,
 		},
 	}
+	for labelName, labelValue := range data.customLabelsMap {
+		event[labelName] = labelValue
+	}
 	a.client.PublishEvent(event)
 }
 
