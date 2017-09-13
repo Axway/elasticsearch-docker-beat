@@ -13,7 +13,7 @@ Logs are the ones the containerized applications send to standard output.
 
 ### Build
 
-Build the project is not mandatory, you can use directly the elasticsearch-docker-beat public image on docker hub see 'run' chapter.
+Build the project is not mandatory, you can use directly the elasticsearch-docker-beat public image on docker hub see 'run' chapter, even with a dedicated configuration file, see 'configuration' chapter.
 
 Prerequisite:
 - Docker version 17.03.0-ce min installed
@@ -50,107 +50,8 @@ docker pull axway/elasticsearch-docker-beat:latest
 
 Available tags are: latest, 0.0.2
 
-### configuration
 
-Configuration file is dbeat-confimage.yml. This file is integrated when the image is built
-
-It contains the common beat configuration and some specific settings:
-
-#### output settings
-
-- `net: [true, false]` : default false, compute and send containers network metrics
-- `memory: [true, false]` : default false, compute and send containers memory metrics
-- `io: [true, false]` : default false, compute and send containers disk io metrics
-- `cpu: [true, false]` : default false, compute and send containers cpu metrics
-- `logs: [true, false]` : default true, send containers logs
-- `logs_position_save_period: {duration in second}` : default 10, period of time to save container logs position (to do not re-send all the logs in case of stop/restart)
-
-#### logs multiline setting
-
-Define container per container or globaly for all, or per service or per stack the logs grouping behavior.
-
-```
-logs_multiline:
-    {name}:
-      applyOn: [container, service, stack]
-      pattern: {a valid regexp pattern}
-      negate: [true, false]
-      append: [true, false]
-      activated: [true, false]
-    default:
-      ...
-
-logs_multiline_max_size: {size}
-```
-where:
-- {name}: mandatory, is the name of the container or service or stack depending on 'applyOn' value, {name} can be equal to 'default' to specific a behavior for all containers
-- applyOn: mandatory, define on which object the {name} value is apply:
-  - if 'container': select the container having the name {name}
-  - if 'service': select all the containers belonging to the service having the name {name}
-  - if 'stack': select all the containers belonging to the stack having the name {name}
-- pattern: mandatory, define the regexp pattern using to evaluation if the log have to be grouped with the previous log or not
-- negate: default false, if true, indicate that the negation of pattern regexp is taken as result of the evaluation
-- append: default: true, if true group logs by appending them at the end of the current group, otherwise add them at the beginning of the group.
-- activated: default true, to be able to invalidate the setting without removing the setting values from the configuration file
-- logs_multiline_max_size: default 100000, define the max size of a group in octets
-
-It can have sevaral `{name}:` settings
-
-#### custom labels
-
-to add custom label in logs or metrics add the following setting in configuration file:
-
-```
-custom_labels:
-  - 'regexp_pattern'
-```
-
-where `regexp_pattern` is evaluated against container labels name to know if they have to be included in the logs and metrics event
-
-for instance:
-
-```
-custome_labels:
-  - axway-target-flow
-  - '^test-'
-```
-
-will include in logs and metrics events the labels and their value: `axway-target-value` and all the labels having their name starting by `test-`
-
-#### sample
-
-```
-# event types enabled or not
-net: false
-memory: false
-io: false
-cpu: false
-logs: true
-
-# period of time in second the logs position is saved
-logs_position_save_period: 5
-
-# logs multiline setting
-logs_multiline:
-    default:
-      pattern: '^[0-9]{4}/[0-9]{2}/[0-9]{2}'
-      negate: true
-    test:
-      applyOn: container
-      pattern: '^[0-9]{4}-[0-9]{2}-[0-9]{2}'
-      negate: true
-    dbeat:
-      applyOn: service
-      pattern: '^\s'
-      negate: true
-
- custom_labels:
-    - axway-target-flow
-    - '^test-'
-```
-
-
-### Run in swarnm context
+### Run in swarm context
 
 Create swarm and network `aNetwork' if not exist
 
@@ -247,6 +148,127 @@ docker-compose -p [this upper file path] -d
 
 see ./tests/docker-compose.yml file to have the full stack including Kibana and Elasticsearch
 
+
+### configuration
+
+Configuration file is `dbeat-confimage.yml` in the project.
+
+By default, this file is copied in the image at image build step, but it's possible to use an external configuration file adding a volume in the container, service or stack file definition
+
+```
+volumes:
+  - dbeat:/containers
+  - /var/run/docker.sock:/var/run/docker.sock
+  - [your configuration file full path]:/etc/beatconf/dbeat.yml
+```
+the third line define the link between your conffile on the host and the conffile used by dbeat:
+
+for instance:
+
+```
+volumes:
+  - dbeat:/containers
+  - /var/run/docker.sock:/var/run/docker.sock
+  - /tmp/myconffile.yml:/etc/beatconf/dbeat.yml
+```
+
+define that dbeat is going to use the file /tmp/myconffile.yml on the host as its conffile
+
+
+The dbeat conffile contains the common beat configuration (common to all Elasticsearch beats) and some dbeat specific settings:
+
+#### output settings
+
+- `net: [true, false]` : default false, compute and send containers network metrics
+- `memory: [true, false]` : default false, compute and send containers memory metrics
+- `io: [true, false]` : default false, compute and send containers disk io metrics
+- `cpu: [true, false]` : default false, compute and send containers cpu metrics
+- `logs: [true, false]` : default true, send containers logs
+- `logs_position_save_period: {duration in second}` : default 10, period of time to save container logs position (to do not re-send all the logs in case of stop/restart)
+
+#### logs multiline setting
+
+Define container per container or globaly for all, or per service or per stack the logs grouping behavior.
+
+```
+logs_multiline:
+    {name}:
+      applyOn: [container, service, stack]
+      pattern: {a valid regexp pattern}
+      negate: [true, false]
+      append: [true, false]
+      activated: [true, false]
+    default:
+      ...
+
+logs_multiline_max_size: {size}
+```
+where:
+- {name}: mandatory, is the name of the container or service or stack depending on 'applyOn' value, {name} can be equal to 'default' to specific a behavior for all containers
+- applyOn: mandatory, define on which object the {name} value is apply:
+  - if 'container': select the container having the name {name}
+  - if 'service': select all the containers belonging to the service having the name {name}
+  - if 'stack': select all the containers belonging to the stack having the name {name}
+- pattern: mandatory, define the regexp pattern using to evaluation if the log have to be grouped with the previous log or not
+- negate: default false, if true, indicate that the negation of pattern regexp is taken as result of the evaluation
+- append: default: true, if true group logs by appending them at the end of the current group, otherwise add them at the beginning of the group.
+- activated: default true, to be able to invalidate the setting without removing the setting values from the configuration file
+- logs_multiline_max_size: default 100000, define the max size of a group in octets
+
+It can have sevaral `{name}:` settings
+
+#### custom labels
+
+to add custom label in logs or metrics add the following setting in configuration file:
+
+```
+custom_labels:
+  - 'regexp_pattern'
+```
+
+where `regexp_pattern` is evaluated against container labels name to know if they have to be included in the logs and metrics event
+
+for instance:
+
+```
+custome_labels:
+  - axway-target-flow
+  - '^test-'
+```
+
+will include in logs and metrics events the labels and their value: `axway-target-value` and all the labels having their name starting by `test-`
+
+#### sample
+
+```
+# event types enabled or not
+net: false
+memory: false
+io: false
+cpu: false
+logs: true
+
+# period of time in second the logs position is saved
+logs_position_save_period: 5
+
+# logs multiline setting
+logs_multiline:
+    default:
+      pattern: '^[0-9]{4}/[0-9]{2}/[0-9]{2}'
+      negate: true
+    test:
+      applyOn: container
+      pattern: '^[0-9]{4}-[0-9]{2}-[0-9]{2}'
+      negate: true
+    dbeat:
+      applyOn: service
+      pattern: '^\s'
+      negate: true
+
+ custom_labels:
+    - axway-target-flow
+    - '^test-'
+```
 
 ### Update
 
