@@ -1,4 +1,4 @@
-# elasticsearch-docker-beat
+# elasticsearch-docker-beat v0.0.2
 
 Welcome to elasticsearch-docker-beat
 
