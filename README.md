@@ -53,14 +53,19 @@ Available tags are: latest, 0.0.2
 
 ### Run in swarm context
 
-Create swarm and network `aNetwork' if not exist
+Create local swarm manager node, if not exist:
 
 ```
 docker node inspect self > /dev/null 2>&1 || docker swarm inspect > /dev/null 2>&1 || (echo "> Initializing swarm" && docker swarm init --advertise-addr 127.0.0.1)
+```
+
+Create network `aNetwork`, if not exist:
+
+```
 docker network ls | grep aNetwork || (echo "> Creating overlay network 'aNetwork'" && docker network create -d overlay aNetwork)
 ```
 
-Create dbeat names Docker volume, if not exist
+Create named volume `dbeat`, if not exist:
 
 ```
 Docker volume create dbeat
