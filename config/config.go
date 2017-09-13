@@ -22,8 +22,10 @@ type Config struct {
 	CPU                  bool                         `config:"cpu"`
 	LogsMultilineMaxSize int                          `config:"logs_multiline_max_size"`
 	LogsMultiline        map[string]map[string]string `config:"logs_multiline"`
+	CustomLabels         []string                     `config:"custom_labels"`
 }
 
+// MLConfig multiline config struct
 type MLConfig struct {
 	Activated bool
 	Pattern   string
@@ -43,4 +45,6 @@ var DefaultConfig = Config{
 	IO:                   true,
 	CPU:                  true,
 	LogsMultilineMaxSize: 100000,
+	LogsMultiline:        make(map[string]map[string]string),
+	CustomLabels:         make([]string, 0),
 }

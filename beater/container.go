@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"regexp"
 	"strings"
 	"time"
 
@@ -33,7 +34,6 @@ type ContainerData struct {
 	stackName       string
 	taskID          string
 	nodeID          string
-	role            string
 	pid             int
 	state           string
 	health          string
@@ -52,7 +52,8 @@ type ContainerData struct {
 	lastLogTimestamp time.Time
 	lastLogTime      time.Time
 	//container config
-	mlConfig *config.MLConfig
+	mlConfig        *config.MLConfig
+	customLabelsMap map[string]string
 }
 
 //AgentStart Connect to docker engine, get initial containers list and start the agent
@@ -158,16 +159,17 @@ func (a *dbeat) addContainer(ID string) {
 		inspect, err := a.dockerClient.ContainerInspect(context.Background(), ID)
 		if err == nil {
 			data := ContainerData{
-				ID:            ID,
-				name:          inspect.Name,
-				state:         inspect.State.Status,
-				pid:           inspect.State.Pid,
-				health:        "",
-				logsStream:    nil,
-				logsReadError: false,
-				tobepurged:    false,
-				lastLog:       "",
-				lastLogTime:   time.Now(),
+				ID:              ID,
+				name:            inspect.Name,
+				state:           inspect.State.Status,
+				pid:             inspect.State.Pid,
+				health:          "",
+				logsStream:      nil,
+				logsReadError:   false,
+				tobepurged:      false,
+				lastLog:         "",
+				lastLogTime:     time.Now(),
+				customLabelsMap: make(map[string]string),
 			}
 			fmt.Printf("Container %s state: %s\n", data.name, data.state)
 			if data.state == "exited" {
@@ -190,16 +192,15 @@ func (a *dbeat) addContainer(ID string) {
 			if data.stackName == "" {
 				data.stackName = "noStack"
 			}
-			fmt.Printf("axway-target-flow: %s\n", a.getMapValue(labels, "axway-target-flow"))
-			data.axwayTargetFlow = a.getMapValue(labels, "axway-target-flow")
-			data.role = a.getMapValue(labels, "io.amp.role")
 			if inspect.State.Health != nil {
 				data.health = inspect.State.Health.Status
 			}
-			if data.role == "infrastructure" {
-				fmt.Printf("add infrastructure container  %s\n", data.name)
-			} else {
-				fmt.Printf("add user container %s, stack=%s service=%s\n", data.name, data.stackName, data.serviceName)
+			for _, pattern := range a.config.CustomLabels {
+				for labelName, labelValue := range labels {
+					if ok, _ := regexp.MatchString(pattern, labelName); ok {
+						data.customLabelsMap[labelName] = labelValue
+					}
+				}
 			}
 			a.containers[ID] = &data
 		} else {

@@ -96,6 +96,27 @@ where:
 
 It can have sevaral `{name}:` settings
 
+#### custom labels
+
+to add custom label in logs or metrics add the following setting in configuration file:
+
+```
+custom_labels:
+  - 'regexp_pattern'
+```
+
+where `regexp_pattern` is evaluated against container labels name to know if they have to be included in the logs and metrics event
+
+for instance:
+
+```
+custome_labels:
+  - axway-target-flow
+  - '^test-'
+```
+
+will include in logs and metrics events the labels and their value: `axway-target-value` and all the labels having their name starting by `test-`
+
 #### sample
 
 ```
@@ -122,6 +143,10 @@ logs_multiline:
       applyOn: service
       pattern: '^\s'
       negate: true
+
+ custom_labels:
+    - axway-target-flow
+    - '^test-'
 ```
 
 
