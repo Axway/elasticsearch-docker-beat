@@ -29,6 +29,14 @@ create-image:
 	rm -f elasticsearch-docker-beat
 	docker build -t axway/elasticsearch-docker-beat:latest .
 
+.PHONY: push-image
+push-image: create-image
+	docker save axway/elasticsearch-docker-beat -o dbeat.dimg
+	docker-machine scp dbeat.dimg default:/tmp/
+	docker-machine ssh default docker load -i /tmp/dbeat.dimg
+	rm dbeat.dimg
+	docker-machine ssh default rm /tmp/dbeat.dimg
+
 .PHONY: create-image-test
 create-image-test:
 	rm -f elasticsearch-docker-beat
