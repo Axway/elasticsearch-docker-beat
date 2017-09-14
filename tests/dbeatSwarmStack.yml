@@ -22,14 +22,16 @@ services:
     image: axway/elasticsearch-docker-beat:test
     networks:
       default:
-        aliases:
-          - ampbeat
+    environment:
+      - ELASTICSEARCH_HOST=elasticsearch:9200
     volumes:
       - dbeat:/containers
       - /var/run/docker.sock:/var/run/docker.sock
     deploy:
       mode: replicated
       replicas: 1
+    depends_on:
+      - elasticsearch
 
 
 
@@ -43,3 +45,5 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+    depends_on:
+      - elasticsearch

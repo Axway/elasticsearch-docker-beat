@@ -3,6 +3,7 @@ package beater
 import (
 	"fmt"
 	"log"
+	"os"
 	"strings"
 	"time"
 
@@ -39,7 +40,6 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 	if err := cfg.Unpack(&dconfig); err != nil {
 		return nil, fmt.Errorf("Error reading config file: %v", err)
 	}
-	log.Printf("Config: %+v\n", dconfig)
 	bt := &dbeat{
 		done:           make(chan struct{}),
 		config:         dconfig,
@@ -47,6 +47,11 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 		MLServiceMap:   make(map[string]*config.MLConfig),
 		MLContainerMap: make(map[string]*config.MLConfig),
 	}
+	return bt, nil
+}
+
+// set log multiline configuration
+func (bt *dbeat) setMLConfig() {
 	for mlName, mlMap := range bt.config.LogsMultiline {
 		ml := &config.MLConfig{Activated: true, Negate: false, Append: true}
 		applyOn := ""
@@ -87,7 +92,19 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 		fmt.Printf("ML apply on %s name=%s: %+v\n", applyOn, mlName, ml)
 	}
 	fmt.Printf("MLContainer setting: %+v\n", bt.MLContainerMap)
-	return bt, nil
+}
+
+// set custom label configuration using env variable
+func (bt *dbeat) setCLConfig() {
+	cs := os.Getenv("CUSTOM_LABELS")
+	fmt.Printf("Custom labels: %s\n", cs)
+	if cs != "" {
+		bt.config.CustomLabels = make([]string, 0)
+		list := strings.Split(cs, ",")
+		for _, pattern := range list {
+			bt.config.CustomLabels = append(bt.config.CustomLabels, strings.TrimSpace(pattern))
+		}
+	}
 }
 
 // Run dbeat main loop
@@ -99,9 +116,12 @@ func (bt *dbeat) Run(b *beat.Beat) error {
 	if err != nil {
 		log.Fatal(err)
 	}
+	bt.setMLConfig()
+	bt.setCLConfig()
+	bt.initAPI()
+	log.Printf("Config: %+v\n", bt.config)
 	bt.beaterStarted = true
 	logp.Info("dbeat is running! Hit CTRL-C to stop it.")
-	bt.initAPI()
 
 	for {
 		select {

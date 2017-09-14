@@ -68,7 +68,7 @@ docker network ls | grep aNetwork || (echo "> Creating overlay network 'aNetwork
 Create named volume `dbeat`, if not exist:
 
 ```
-Docker volume create dbeat
+docker volume create dbeat
 ```
 
 
@@ -158,7 +158,13 @@ see ./tests/docker-compose.yml file to have the full stack including Kibana and 
 
 Configuration file is `dbeat-confimage.yml` in the project.
 
-By default, this file is copied in the image at image build step, but it's possible to use an external configuration file adding a volume in the container, service or stack file definition
+By default, this file is copied in the image at image build step, but it's possible:
+- to use an external configuration file (see chapter `use an external configuration file`)
+- to use environment variables (see chapter `configure using environment variables`)
+
+#### Use an external configuration file
+
+ to use an external configuration file adding a volume in the container, service or stack file definition
 
 ```
 volumes:
@@ -166,7 +172,7 @@ volumes:
   - /var/run/docker.sock:/var/run/docker.sock
   - [your configuration file full path]:/etc/beatconf/dbeat.yml
 ```
-the third line define the link between your conffile on the host and the conffile used by dbeat:
+the third line defines the link between your conffile on the host and the conffile used by dbeat:
 
 for instance:
 
@@ -220,7 +226,7 @@ where:
 - activated: default true, to be able to invalidate the setting without removing the setting values from the configuration file
 - logs_multiline_max_size: default 100000, define the max size of a group in octets
 
-It can have sevaral `{name}:` settings
+It can have several `{name}:` settings
 
 #### custom labels
 
@@ -274,6 +280,25 @@ logs_multiline:
     - axway-target-flow
     - '^test-'
 ```
+
+#### Configure using environment variables
+
+To cofiguration using environment variable, it's enough to add variables ans values in container run command or service definition in docker-compose file or in stack file
+
+the following variables are supported:
+
+- ELASTICSEARCH_HOST : format: `host:port`, define the host and port of elasticsearch,
+- METRICS_IO: false or true, if true send disk io metrics
+- METRICS_CPU: false or true, if true send cpu metrics
+- METRICS_MEM: false or true, if true send memory metrics
+- METRICS_NET: false or true, if true send network metrics
+- LOGS: false or true, if true send logs
+- CUSTOM_LABELS: format: `pattern1,pattern2,...`, list of labels name to be send with the events
+- LOGS_POSITION_SAVE_PERIOD: numeric value in second, period of time between two logs positions saving
+- ...
+
+See dbeat-confimage.yml file to get the complete list of the environment variables
+
 
 ### Update
 
