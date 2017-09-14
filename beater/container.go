@@ -162,7 +162,7 @@ func (a *dbeat) addContainer(ID string) {
 				customLabelsMap: make(map[string]string),
 			}
 			fmt.Printf("Container %s state: %s\n", data.name, data.state)
-			if data.state == "exited" {
+			if data.state == "exited" || data.state == "dead" {
 				return
 			}
 			a.setMultilineSetting(&data)

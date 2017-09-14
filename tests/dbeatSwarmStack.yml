@@ -19,12 +19,11 @@ services:
       replicas: 1
 
   dbeat:
-    image: axway/elasticsearch-docker-beat:test
+    image: axway/elasticsearch-docker-beat:latest
     networks:
       default:
     environment:
-      - LOGSTASH_HOSTS=[localhost:5044]
-      - EXCLUDED_STACKS=test
+      - ELASTICSEARCH_HOST=elasticsearch:9200
     volumes:
       - dbeat:/containers
       - /var/run/docker.sock:/var/run/docker.sock
