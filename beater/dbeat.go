@@ -2,6 +2,7 @@ package beater
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -9,6 +10,7 @@ import (
 	"time"
 
 	"github.com/Axway/elasticsearch-docker-beat/config"
+	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 	"github.com/elastic/beats/libbeat/beat"
 	"github.com/elastic/beats/libbeat/common"
@@ -226,6 +228,16 @@ func (bt *dbeat) Run(b *beat.Beat) error {
 	bt.initAPI()
 	log.Printf("Config: %+v\n", bt.config)
 	bt.beaterStarted = true
+	bt.containers = make(map[string]*ContainerData)
+	ContainerListOptions := types.ContainerListOptions{All: true}
+	containers, err := bt.dockerClient.ContainerList(context.Background(), ContainerListOptions)
+	if err != nil {
+		return err
+	}
+	for _, cont := range containers {
+		bt.addContainer(cont.ID)
+	}
+	bt.lastUpdate = time.Now()
 	logp.Info("dbeat is running! Hit CTRL-C to stop it.")
 
 	for {

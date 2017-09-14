@@ -69,16 +69,6 @@ func (a *dbeat) start(config *config.Config) error {
 	fmt.Println("Connected to Docker-engine")
 	time.Sleep(10 * time.Second)
 	fmt.Println("Extracting containers list...")
-	a.containers = make(map[string]*ContainerData)
-	ContainerListOptions := types.ContainerListOptions{All: true}
-	containers, err := a.dockerClient.ContainerList(context.Background(), ContainerListOptions)
-	if err != nil {
-		return err
-	}
-	for _, cont := range containers {
-		a.addContainer(cont.ID)
-	}
-	a.lastUpdate = time.Now()
 	fmt.Println("done")
 	return nil
 }
