@@ -195,6 +195,9 @@ func (a *dbeat) addContainer(ID string) {
 			if inspect.State.Health != nil {
 				data.health = inspect.State.Health.Status
 			}
+			if a.isExcluded(&data) {
+				return
+			}
 			for _, pattern := range a.config.CustomLabels {
 				for labelName, labelValue := range labels {
 					if ok, _ := regexp.MatchString(pattern, labelName); ok {
@@ -207,6 +210,28 @@ func (a *dbeat) addContainer(ID string) {
 			fmt.Printf("Container inspect error: %v\n", err)
 		}
 	}
+}
+
+func (a *dbeat) isExcluded(data *ContainerData) bool {
+	for _, pattern := range a.config.ExcludedContainers {
+		if ok, _ := regexp.MatchString(pattern, data.name); ok {
+			fmt.Printf("The container name: %s is excluded\n", data.name)
+			return true
+		}
+	}
+	for _, pattern := range a.config.ExcludedServices {
+		if ok, _ := regexp.MatchString(pattern, data.serviceName); ok {
+			fmt.Printf("This service name: %s is excluded\n", data.serviceName)
+			return true
+		}
+	}
+	for _, pattern := range a.config.ExcludedStacks {
+		if ok, _ := regexp.MatchString(pattern, data.stackName); ok {
+			fmt.Printf("This stack name: %s is excluded\n", data.stackName)
+			return true
+		}
+	}
+	return false
 }
 
 // update ContainerData instance concidering the LogsMultiline setting

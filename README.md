@@ -249,6 +249,34 @@ custome_labels:
 
 will include in logs and metrics events the labels and their value: `axway-target-value` and all the labels having their name starting by `test-`
 
+#### exclude containers
+
+to exclude specific containers, it's possible to use the following setting:
+
+```
+excluded_containers:
+  - pattern1
+  - pattern2
+```
+
+to exclude all containers having name maching with regexp pattern1 or pattern2
+
+```
+excluded_services:
+  - pattern1
+  - pattern2
+```
+
+to exclude all containers of the services having name maching with regexp pattern1 or pattern2
+
+```
+excluded_stacks:
+  - pattern1
+  - pattern2
+```
+
+to exclude all containers of the stacks having name maching with regexp pattern1 or pattern2
+
 #### sample
 
 ```
@@ -279,6 +307,10 @@ logs_multiline:
  custom_labels:
     - axway-target-flow
     - '^test-'
+
+  exclude_services:
+    - test_dbeat
+
 ```
 
 #### Configure using environment variables
@@ -287,15 +319,20 @@ To cofiguration using environment variable, it's enough to add variables and val
 
 the following variables are supported:
 
-- ELASTICSEARCH_HOST : format: `host:port`, define the host and port of elasticsearch,
-- METRICS_IO: false or true, if true send disk io metrics
-- METRICS_CPU: false or true, if true send cpu metrics
-- METRICS_MEM: false or true, if true send memory metrics
-- METRICS_NET: false or true, if true send network metrics
-- LOGS: false or true, if true send logs
-- CUSTOM_LABELS: format: `pattern1,pattern2,...`, list of labels name to be send with the events
-- LOGS_POSITION_SAVE_PERIOD: numeric value in second, period of time between two logs positions saving
-- ...
+- ELASTICSEARCH_HOST: format: `host:port`, define the host and port of elasticsearch,
+- ELASTICSEARCH_PROTOCOL: http/https, default http, define the protocol used with elasticsearch
+- ELASTICSEARCH_USERNAME: elasticsearch user, no default
+- ELASTICSEARCH_PWD: the user password, no default
+- METRICS_IO: false or true, default false, if true send disk io metrics
+- METRICS_CPU: false or true, default false, if true send cpu metrics
+- METRICS_MEM: false or true, default false,  if true send memory metrics
+- METRICS_NET: false or true, default false, if true send network metrics
+- LOGS: false or true, default true, if true send logs
+- CUSTOM_LABELS: default empty, format: `pattern1,pattern2,...`, list of labels name to be send with the events
+- LOGS_POSITION_SAVE_PERIOD: default 10, numeric value in second, period of time between two logs positions saving
+- EXCLUDED_CONTAINERS: no default, list of regexp container name patterns to be excluded
+- EXCLUDED_SERVICES: no default, list of regexp service name patterns to be excluded
+- EXCLUDED_STACKS: no default, list of regexp stack name patterns to be excluded
 
 See dbeat-confimage.yml file to get the complete list of the environment variables
 

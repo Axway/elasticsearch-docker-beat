@@ -23,7 +23,7 @@ services:
     networks:
       default:
     environment:
-      - ELASTICSEARCH_HOST=elasticsearch:9200
+      - LOGSTASH_HOSTS=[localhost:5044]
     volumes:
       - dbeat:/containers
       - /var/run/docker.sock:/var/run/docker.sock

@@ -23,6 +23,9 @@ type Config struct {
 	LogsMultilineMaxSize int                          `config:"logs_multiline_max_size"`
 	LogsMultiline        map[string]map[string]string `config:"logs_multiline"`
 	CustomLabels         []string                     `config:"custom_labels"`
+	ExcludedContainers   []string                     `config:"excluded_containers"`
+	ExcludedServices     []string                     `config:"excluded_services"`
+	ExcludedStacks       []string                     `config:"excluded_stacks"`
 }
 
 // MLConfig multiline config struct
@@ -47,4 +50,7 @@ var DefaultConfig = Config{
 	LogsMultilineMaxSize: 100000,
 	LogsMultiline:        make(map[string]map[string]string),
 	CustomLabels:         make([]string, 0),
+	ExcludedContainers:   make([]string, 0),
+	ExcludedServices:     make([]string, 0),
+	ExcludedStacks:       make([]string, 0),
 }

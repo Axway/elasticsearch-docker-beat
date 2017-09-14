@@ -1,6 +1,7 @@
 package beater
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"os"
@@ -46,6 +47,13 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 		MLStackMap:     make(map[string]*config.MLConfig),
 		MLServiceMap:   make(map[string]*config.MLConfig),
 		MLContainerMap: make(map[string]*config.MLConfig),
+	}
+	if ev := os.Getenv("LOGSTASH_HOSTS"); ev != "" {
+		if err := bt.udateConffile(ev); err != nil {
+			fmt.Printf("Error updating configuration file: %v\n", err)
+			time.Sleep(600 * time.Second)
+			os.Exit(1)
+		}
 	}
 	return bt, nil
 }
@@ -96,15 +104,111 @@ func (bt *dbeat) setMLConfig() {
 
 // set custom label configuration using env variable
 func (bt *dbeat) setCLConfig() {
-	cs := os.Getenv("CUSTOM_LABELS")
-	fmt.Printf("Custom labels: %s\n", cs)
-	if cs != "" {
+	if cs := os.Getenv("CUSTOM_LABELS"); cs != "" {
+		fmt.Printf("Custom labels: %s\n", cs)
 		bt.config.CustomLabels = make([]string, 0)
 		list := strings.Split(cs, ",")
 		for _, pattern := range list {
 			bt.config.CustomLabels = append(bt.config.CustomLabels, strings.TrimSpace(pattern))
 		}
 	}
+}
+
+// set custom label configuration using env variable
+func (bt *dbeat) setExcludedConfig() {
+	if cs := os.Getenv("EXCLUDED_CONTAINERS"); cs != "" {
+		fmt.Printf("Excluded containers: %s\n", cs)
+		bt.config.ExcludedContainers = make([]string, 0)
+		list := strings.Split(cs, ",")
+		for _, pattern := range list {
+			bt.config.ExcludedContainers = append(bt.config.ExcludedContainers, strings.TrimSpace(pattern))
+		}
+	}
+	if cs := os.Getenv("EXCLUDED_SERVICES"); cs != "" {
+		fmt.Printf("Excluded service: %s\n", cs)
+		bt.config.ExcludedServices = make([]string, 0)
+		list := strings.Split(cs, ",")
+		for _, pattern := range list {
+			bt.config.ExcludedServices = append(bt.config.ExcludedServices, strings.TrimSpace(pattern))
+		}
+	}
+	if cs := os.Getenv("EXCLUDED_STACKS"); cs != "" {
+		fmt.Printf("Excluded stacks: %s\n", cs)
+		bt.config.ExcludedStacks = make([]string, 0)
+		list := strings.Split(cs, ",")
+		for _, pattern := range list {
+			bt.config.ExcludedStacks = append(bt.config.ExcludedStacks, strings.TrimSpace(pattern))
+		}
+	}
+}
+
+// update conffile to add logstash setting (no need for elasticsearch setting)
+func (bt *dbeat) udateConffile(logstashHosts string) error {
+	fileName := "/etc/beatconf/dbeat.yml"
+	file, err := os.Create(fileName + ".new")
+	if err != nil {
+		fmt.Printf("Error creating new conffile for creation: %v\n", err)
+		return err
+	}
+	filetpt, err := os.Open(fileName)
+	if err != nil {
+		fmt.Printf("Error opening conffile: %s : %v\n", fileName, err)
+		return err
+	}
+	scanner := bufio.NewScanner(filetpt)
+	elasticsearch := false
+	logstash := false
+	for scanner.Scan() {
+		line := scanner.Text()
+		if line == "output.elasticsearch:" {
+			elasticsearch = true
+			logstash = false
+		}
+		if line == "#output.logstash:" {
+			logstash = true
+			elasticsearch = false
+			line = "output.logstash:"
+		}
+		if elasticsearch {
+			line = "#" + line
+		}
+		if logstash {
+			if strings.Contains(line, "hosts:") {
+				line = "\thosts: " + logstashHosts
+			}
+			if strings.Contains(line, "ssl.certificate_authorities:") {
+				if lca := os.Getenv("LOGSTASH_CERT_AUTHS"); lca != "" {
+					line = "\tssl.certificate_authorities: " + lca
+				}
+			}
+			if strings.Contains(line, "ssl.certificate:") {
+				if lc := os.Getenv("LOGSTASH_CERT"); lc != "" {
+					line = "\tssl.certificate: " + lc
+				}
+			}
+			if strings.Contains(line, "ssl.key:") {
+				if lk := os.Getenv("LOGSTASH_KEY"); lk != "" {
+					line = "\tssl.key: " + lk
+				}
+			}
+		}
+		fmt.Println(line)
+		file.WriteString(line + "\n")
+	}
+	if err = scanner.Err(); err != nil {
+		fmt.Printf("Error reading conffile: %s %v\n", fileName, err)
+		file.Close()
+		return err
+	}
+	file.Close()
+	os.Remove(fileName)
+	err2 := os.Rename(fileName+".new", fileName)
+	if err2 != nil {
+		fmt.Printf("Error renaming conffile .new: %v\n", err)
+		return err
+	}
+	fmt.Println("Configuration updated for logstash")
+	return nil
 }
 
 // Run dbeat main loop

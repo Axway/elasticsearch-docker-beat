@@ -39,6 +39,9 @@ dbeat:
 
 
 
+
+
+
 #================================ General =====================================
 
 # The name of the shipper that publishes the network data. It can be used to group
@@ -65,24 +68,24 @@ output.elasticsearch:
   hosts: ${ELASTICSEARCH_HOST:"elasticsearch:9200"}
 
   # Optional protocol and basic auth credentials.
-  #protocol: "https"
-  #username: "elastic"
-  #password: "changeme"
+  protocol: ${ELASTICSEARCH_PROTOCOL:http} #"https"
+  username: ${ELASTICSEARCH_USERNAME:} #"elastic"
+  password: ${ELASTICSEARCH_PWD:} #"changeme"
 
 #----------------------------- Logstash output --------------------------------
 #output.logstash:
   # The Logstash hosts
-  #hosts: ["localhost:5044"]
+  # hosts: # ${LOGSTASH_HOSTS: ["localhost:5044"]}
 
   # Optional SSL. By default is off.
   # List of root certificates for HTTPS server verifications
-  #ssl.certificate_authorities: ["/etc/pki/root/ca.pem"]
+  # ssl.certificate_authorities: ${LOGSTASH_CERT_AUTHS:} #"/etc/pki/root/ca.pem"
 
   # Certificate for SSL client authentication
-  #ssl.certificate: "/etc/pki/client/cert.pem"
+  # ssl.certificate: ${LOGSTASH_CERT:} #"/etc/pki/client/cert.pem"
 
   # Client Certificate Key
-  #ssl.key: "/etc/pki/client/cert.key"
+  # ssl.key: ${LOGSTASH_KEY:} #"/etc/pki/client/cert.key"
 
 #================================ Logging =====================================
 
