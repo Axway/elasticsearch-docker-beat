@@ -222,6 +222,7 @@ func (bt *dbeat) Run(b *beat.Beat) error {
 	}
 	bt.setMLConfig()
 	bt.setCLConfig()
+	bt.setExcludedConfig()
 	bt.initAPI()
 	log.Printf("Config: %+v\n", bt.config)
 	bt.beaterStarted = true
