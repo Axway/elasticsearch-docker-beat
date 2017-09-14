@@ -14,12 +14,18 @@ services:
     ports:
       - "50106:5601"
       - "443:443"
+    depends_on:
+      - elasticsearch
 
   dbeat:
     image: axway/elasticsearch-docker-beat:latest
+    environment:
+      - ELASTICSEARCH_HOST=elasticsearch:9200
     volumes:
       - dbeat:/containers
       - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - elasticsearch
 
 volumes:
   dbeat:
