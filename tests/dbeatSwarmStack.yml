@@ -19,7 +19,7 @@ services:
       replicas: 1
 
   dbeat:
-    image: axway/elasticsearch-docker-beat:test
+    image: axway/elasticsearch-docker-beat:latest
     networks:
       default:
     environment:

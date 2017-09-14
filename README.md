@@ -283,7 +283,7 @@ logs_multiline:
 
 #### Configure using environment variables
 
-To cofiguration using environment variable, it's enough to add variables ans values in container run command or service definition in docker-compose file or in stack file
+To cofiguration using environment variable, it's enough to add variables and values in container run command or service definition in docker-compose file or in stack file
 
 the following variables are supported:
 
@@ -299,6 +299,26 @@ the following variables are supported:
 
 See dbeat-confimage.yml file to get the complete list of the environment variables
 
+example in a stack file:
+
+```
+dbeat:
+  image: axway/elasticsearch-docker-beat:latest
+  networks:
+    default:
+  environment:
+    - ELASTICSEARCH_HOST=elasticsearch:9200
+    - METRICS_CPU=true
+    - CUSTOM_LABELS=^test-
+  volumes:
+    - dbeat:/containers
+    - /var/run/docker.sock:/var/run/docker.sock
+  deploy:
+    mode: replicated
+    replicas: 1
+  depends_on:
+    - elasticsearch
+  ```
 
 ### Update
 
