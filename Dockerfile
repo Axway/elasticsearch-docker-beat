@@ -1,10 +1,10 @@
 FROM golang:1.9 as BUILD
 
-ENV DELVE_VERSION=1.0.0-rc.1
+#ENV DELVE_VERSION=1.0.0-rc.1
 
-RUN go get -d github.com/derekparker/delve/cmd/dlv
-RUN cd /go/src/github.com/derekparker/delve && git checkout v$DELVE_VERSION
-RUN go install github.com/derekparker/delve/cmd/dlv
+#RUN go get -d github.com/derekparker/delve/cmd/dlv
+#RUN cd /go/src/github.com/derekparker/delve && git checkout v$DELVE_VERSION
+#RUN go install github.com/derekparker/delve/cmd/dlv
 
 COPY ./ /go/src/github.com/Axway/elasticsearch-docker-beat
 RUN cd  /go/src/github.com/Axway/elasticsearch-docker-beat && \
@@ -13,14 +13,14 @@ RUN cd  /go/src/github.com/Axway/elasticsearch-docker-beat && \
 FROM frolvlad/alpine-glibc
 
 RUN apk update && apk -v add curl
-COPY --from=BUILD /go/bin/dlv /usr/local/bin
+#COPY --from=BUILD /go/bin/dlv /usr/local/bin
 COPY --from=BUILD /go/src/github.com/Axway/elasticsearch-docker-beat/elasticsearch-docker-beat /etc/dbeat/dbeat
 COPY ./dbeat-confimage.yml /etc/beatconf/dbeat.yml
 COPY ./*.json /etc/dbeat/
 
 WORKDIR /etc/dbeat
 
-HEALTHCHECK --interval=10s --timeout=15s --retries=12 CMD curl -s localhost:3000/health
+HEALTHCHECK --interval=10s --timeout=15s --retries=12 CMD curl -s -f localhost:3000/api/v1/health
 
 CMD ["/etc/dbeat/dbeat", "-e", "-c", "/etc/beatconf/dbeat.yml"]
 
