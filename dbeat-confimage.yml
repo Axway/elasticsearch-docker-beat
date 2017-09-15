@@ -59,7 +59,7 @@ name: ${SHIPPER_NAME:dbeat}
 #-------------------------- Elasticsearch output ------------------------------
 output.elasticsearch:
   # Array of hosts to connect to.
-  hosts: ${ELASTICSEARCH_HOST:"elasticsearch:9201"}
+  hosts: ${ELASTICSEARCH_HOST:"elasticsearch:9200"}
 
   # Optional protocol and basic auth credentials.
   protocol: ${ELASTICSEARCH_PROTOCOL:http} #"https"
