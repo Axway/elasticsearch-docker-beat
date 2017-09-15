@@ -323,6 +323,10 @@ the following variables are supported:
 - ELASTICSEARCH_PROTOCOL: http/https, default http, define the protocol used with elasticsearch
 - ELASTICSEARCH_USERNAME: elasticsearch user, no default
 - ELASTICSEARCH_PWD: the user password, no default
+- LOGSTASH_HOSTS: format: [host1:port1,host2:port2,...], define the hosts/ports of the logstashs
+- LOGSTASH_CERT_AUTHS: no default,
+- LOGSTASH_CERT
+- LOGSTASH_KEY
 - METRICS_IO: false or true, default false, if true send disk io metrics
 - METRICS_CPU: false or true, default false, if true send cpu metrics
 - METRICS_MEM: false or true, default false,  if true send memory metrics
@@ -334,7 +338,8 @@ the following variables are supported:
 - EXCLUDED_SERVICES: no default, list of regexp service name patterns to be excluded
 - EXCLUDED_STACKS: no default, list of regexp stack name patterns to be excluded
 
-See dbeat-confimage.yml file to get the complete list of the environment variables
+`Warning if ELASTICSEARCH_HOST && LOGSTASH_HOST are set, only LOGSTASH_HOSTS will be taken in account`
+
 
 example in a stack file:
 

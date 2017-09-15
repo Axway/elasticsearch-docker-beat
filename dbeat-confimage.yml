@@ -1,4 +1,4 @@
-################### dbeat Configuration Example #########################
+################### dbeat Configuration  #################################
 
 ############################# dbeat ######################################
 
@@ -36,12 +36,6 @@ dbeat:
     - axway-target-flow
 
 
-
-
-
-
-
-
 #================================ General =====================================
 
 # The name of the shipper that publishes the network data. It can be used to group
@@ -65,7 +59,7 @@ name: ${SHIPPER_NAME:dbeat}
 #-------------------------- Elasticsearch output ------------------------------
 output.elasticsearch:
   # Array of hosts to connect to.
-  hosts: ${ELASTICSEARCH_HOST:"elasticsearch:9200"}
+  hosts: ${ELASTICSEARCH_HOST:"elasticsearch:9201"}
 
   # Optional protocol and basic auth credentials.
   protocol: ${ELASTICSEARCH_PROTOCOL:http} #"https"
@@ -75,7 +69,7 @@ output.elasticsearch:
 #----------------------------- Logstash output --------------------------------
 #output.logstash:
   # The Logstash hosts
-  # hosts: # ${LOGSTASH_HOSTS: ["localhost:5044"]}
+  # hosts: ["logstash:5044"]
 
   # Optional SSL. By default is off.
   # List of root certificates for HTTPS server verifications
