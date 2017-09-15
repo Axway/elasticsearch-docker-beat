@@ -62,7 +62,12 @@ func udateConffile(logstashHosts string) error {
 				}
 				if strings.Contains(line, "ssl.certificate_authorities:") {
 					if lca := os.Getenv("LOGSTASH_CERT_AUTHS"); lca != "" {
-						line = "  ssl.certificate_authorities: " + lca
+						list := strings.Split(lca, ",")
+						line = "  ssl.certificate_authorities: ['" + strings.TrimSpace(list[0]) + "'"
+						for _, cert := range list[1:] {
+							line += "," + strings.TrimSpace(cert)
+						}
+						line += "]"
 					}
 				}
 				if strings.Contains(line, "ssl.certificate:") {

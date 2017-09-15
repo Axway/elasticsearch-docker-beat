@@ -320,19 +320,19 @@ To configuration using environment variable, it's enough to add variables and va
 the following variables are supported:
 
 - ELASTICSEARCH_HOST: format: `host:port`, define the host and port of elasticsearch,
-- ELASTICSEARCH_PROTOCOL: http/https, default http, define the protocol used with elasticsearch
-- ELASTICSEARCH_USERNAME: elasticsearch user, no default
-- ELASTICSEARCH_PWD: the user password, no default
-- LOGSTASH_HOSTS: format: host1:port1,host2:port2,..., define the hosts/ports of the logstashs
-- LOGSTASH_CERT_AUTHS: no default,
-- LOGSTASH_CERT
-- LOGSTASH_KEY
-- METRICS_IO: false or true, default false, if true send disk io metrics
-- METRICS_CPU: false or true, default false, if true send cpu metrics
-- METRICS_MEM: false or true, default false,  if true send memory metrics
-- METRICS_NET: false or true, default false, if true send network metrics
-- LOGS: false or true, default true, if true send logs
-- CUSTOM_LABELS: default empty, format: `pattern1,pattern2,...`, list of labels name to be send with the events
+- ELASTICSEARCH_PROTOCOL: `http` or `https`, default http, define the protocol used with elasticsearch
+- ELASTICSEARCH_USERNAME: no default, elasticsearch user
+- ELASTICSEARCH_PWD: no default, the user password
+- LOGSTASH_HOSTS: format: `host1:port1,host2:port2,...`, define the hosts/ports of the logstashs
+- LOGSTASH_CERT_AUTHS: no default, format: `certPath,certPath,...`, list of root certificates for HTTPS server verification
+- LOGSTASH_CERT: no default, certificate for SSL client authentication
+- LOGSTASH_KEY: no default, client Certificate Key
+- METRICS_IO: `false` or `true`, default false, if true send disk io metrics
+- METRICS_CPU: `false` or `true`, default false, if true send cpu metrics
+- METRICS_MEM: `false` or `true`, default false,  if true send memory metrics
+- METRICS_NET: `false` or `true`, default false, if true send network metrics
+- LOGS: `false` or `true`, default true, if true send logs
+- CUSTOM_LABELS: format: `pattern1,pattern2,...`, list of labels name to be send with the events
 - LOGS_POSITION_SAVE_PERIOD: default 10, numeric value in second, period of time between two logs positions saving
 - EXCLUDED_CONTAINERS: no default, list of regexp container name patterns to be excluded
 - EXCLUDED_SERVICES: no default, list of regexp service name patterns to be excluded
