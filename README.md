@@ -315,7 +315,7 @@ logs_multiline:
 
 #### Configure using environment variables
 
-To cofiguration using environment variable, it's enough to add variables and values in container run command or service definition in docker-compose file or in stack file
+To configuration using environment variable, it's enough to add variables and values in container run command or service definition in docker-compose file or in stack file
 
 the following variables are supported:
 
@@ -323,7 +323,7 @@ the following variables are supported:
 - ELASTICSEARCH_PROTOCOL: http/https, default http, define the protocol used with elasticsearch
 - ELASTICSEARCH_USERNAME: elasticsearch user, no default
 - ELASTICSEARCH_PWD: the user password, no default
-- LOGSTASH_HOSTS: format: [host1:port1,host2:port2,...], define the hosts/ports of the logstashs
+- LOGSTASH_HOSTS: format: host1:port1,host2:port2,..., define the hosts/ports of the logstashs
 - LOGSTASH_CERT_AUTHS: no default,
 - LOGSTASH_CERT
 - LOGSTASH_KEY
