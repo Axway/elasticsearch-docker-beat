@@ -35,6 +35,9 @@ dbeat:
   custom_labels:
     - axway-target-flow
 
+  excluded_services:
+    - logstash
+
 
 #================================ General =====================================
 

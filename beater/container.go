@@ -300,7 +300,11 @@ func (a *dbeat) getHostname() string {
 }
 
 func (a *dbeat) getHTTPString(url string) string {
-	res, err := http.Get(url)
+	timeout := time.Duration(1 * time.Second)
+	client := http.Client{
+		Timeout: timeout,
+	}
+	res, err := client.Get(url)
 	if err != nil {
 		return ""
 	}
