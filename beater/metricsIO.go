@@ -46,6 +46,8 @@ func (a *dbeat) publishIOMetrics(stats *types.StatsJSON, data *ContainerData) {
 		"service_id":           data.serviceID,
 		"task_id":              data.taskID,
 		"stack_name":           data.stackName,
+		"host_ip":              data.hostIP,
+		"hostname":             data.hostname,
 		"blkio": common.MapStr{
 			"read":  diff.Reads,
 			"write": diff.Writes,

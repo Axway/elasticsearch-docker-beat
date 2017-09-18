@@ -38,7 +38,7 @@ type dbeat struct {
 
 // New Creates beater
 func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
-	fmt.Println("dbeat version 0.0.2 b10")
+	fmt.Println("dbeat version 0.0.2 b11")
 	bt := &dbeat{
 		done:           make(chan struct{}),
 		MLStackMap:     make(map[string]*config.MLConfig),

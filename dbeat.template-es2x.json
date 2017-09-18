@@ -70,6 +70,20 @@
         "failcnt": {
           "type": "long"
         },
+        "host_addr": {
+          "index": "analyzed",
+          "norms": {
+            "enabled": false
+          },
+          "type": "string"
+        },
+        "host_name": {
+          "index": "analyzed",
+          "norms": {
+            "enabled": false
+          },
+          "type": "string"
+        },
         "limit": {
           "type": "long"
         },

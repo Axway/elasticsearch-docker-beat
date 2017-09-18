@@ -56,6 +56,16 @@
       description: >
         dedicated amp field: amp role
 
+    - name: "host_addr"
+      type: text
+      description: >
+        the host ip
+
+    - name: "host_name"
+      type: text
+      description: >
+        the host name
+
     - name: "axway-target-flow"
       type: text
       description: >

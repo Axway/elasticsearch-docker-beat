@@ -404,6 +404,22 @@ dedicated amp field: amp role
 
 
 [float]
+=== host_addr
+
+type: text
+
+the host ip
+
+
+[float]
+=== host_name
+
+type: text
+
+the host name
+
+
+[float]
 === axway-target-flow
 
 type: text
