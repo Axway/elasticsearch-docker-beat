@@ -1,12 +1,12 @@
-hash: ef54e1787540de3eb3874b335f250da51e4be2afcfdfd51a89a7c4c0a088237d
-updated: 2017-03-11T17:15:51.316762707-08:00
+hash: d9efb7b21dbc756fc677a1ed7ee18853c80f058c36197d05df0456c3477f617d
+updated: 2017-09-18T09:58:28.730561225+02:00
 imports:
 - name: github.com/davecgh/go-spew
   version: 5215b55f46b2b919f50a1df0eaa5886afe4e3b3d
   subpackages:
   - spew
 - name: github.com/docker/distribution
-  version: 08b06dc023674763e7b36d404cf0c7664cee1f5e
+  version: c3e06c6069653bf72034ed907d6749d3928fdacb
   subpackages:
   - digestset
   - reference
@@ -30,7 +30,7 @@ imports:
   - client
   - pkg/tlsconfig
 - name: github.com/docker/go-connections
-  version: a2afab9802043837035592f1c24827fb70766de9
+  version: 3ede32e2033de7505e6500d6c868c2b9ed9f169d
   subpackages:
   - nat
   - sockets
@@ -46,7 +46,7 @@ imports:
 - name: github.com/eapache/queue
   version: ded5959c0d4e360646dc9e9908cff48666781367
 - name: github.com/elastic/beats
-  version: 8c790a76ea4fde1f4b6abb62a31a3192a081a0a9
+  version: 6e814513e3713446c2ddd9656099b3d7118d60e4
   subpackages:
   - libbeat/beat
   - libbeat/cfgfile
@@ -84,6 +84,7 @@ imports:
   - libbeat/processors/add_cloud_metadata
   - libbeat/publisher
   - libbeat/service
+  - libbeat/setup/kibana
   - metricbeat/schema
   - metricbeat/schema/mapstriface
 - name: github.com/elastic/go-lumber
@@ -122,13 +123,13 @@ imports:
 - name: github.com/klauspost/crc32
   version: 19b0b332c9e4516a6370a0456e6182c3b5036720
 - name: github.com/Microsoft/go-winio
-  version: fff283ad5116362ca252298cfc9b95828956d85d
+  version: 78439966b38d69bf38227fbf57ac8a6fee70f69a
 - name: github.com/mitchellh/hashstructure
   version: b098c52ef6beab8cd82bc4a32422cf54b890e8fa
 - name: github.com/nranchev/go-libGeoIP
   version: c78e8bd2dd3599feb21fd30886043979e82fe948
 - name: github.com/opencontainers/go-digest
-  version: aa2ec055abd10d26d539eb630a92241b781ce4bc
+  version: 279bed98673dd5bef374d3b6e4b09e2af76183bf
 - name: github.com/pierrec/lz4
   version: 5c9560bfa9ace2bf86080bf40d46b34ae44604df
 - name: github.com/pierrec/xxHash
@@ -146,8 +147,6 @@ imports:
 - name: github.com/Shopify/sarama
   version: f0996189c86dc27338468f2a9b10077c6d572b34
   repo: https://github.com/urso/sarama
-- name: github.com/Sirupsen/logrus
-  version: 1deb2db2a6fff8a35532079061b903c3a25eed52
 - name: golang.org/x/net
   version: d58ca6618b994150e624f6888d871f4709db51a0
   subpackages:
@@ -161,7 +160,6 @@ imports:
 - name: golang.org/x/sys
   version: 62bee037599929a6e9146f29d10dd5208c43507d
   subpackages:
-  - unix
   - windows
   - windows/svc
   - windows/svc/debug
