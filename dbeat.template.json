@@ -55,6 +55,14 @@
         "failcnt": {
           "type": "long"
         },
+        "host_addr": {
+          "norms": false,
+          "type": "text"
+        },
+        "host_name": {
+          "norms": false,
+          "type": "text"
+        },
         "limit": {
           "type": "long"
         },

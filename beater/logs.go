@@ -161,6 +161,8 @@ func (a *dbeat) publishEvent(data *ContainerData, timestamp time.Time, slog stri
 		"task_id":           data.taskID,
 		"stack_name":        data.stackName,
 		"node_id":           data.nodeID,
+		"host_ip":           data.hostIP,
+		"hostname":          data.hostname,
 		"axway-target-flow": data.axwayTargetFlow,
 		"message":           slog,
 	}
