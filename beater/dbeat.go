@@ -17,6 +17,11 @@ import (
 	"github.com/elastic/beats/libbeat/publisher"
 )
 
+const (
+	sfalse = "false"
+	strue  = "true"
+)
+
 // dbeat the amp beat struct
 type dbeat struct {
 	done                chan struct{}
@@ -33,6 +38,7 @@ type dbeat struct {
 	MLStackMap          map[string]*config.MLConfig
 	MLServiceMap        map[string]*config.MLConfig
 	MLContainerMap      map[string]*config.MLConfig
+	JSONFiltersMap      map[string]*config.JSONFilter
 	beaterStarted       bool
 }
 
@@ -44,6 +50,7 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 		MLStackMap:     make(map[string]*config.MLConfig),
 		MLServiceMap:   make(map[string]*config.MLConfig),
 		MLContainerMap: make(map[string]*config.MLConfig),
+		JSONFiltersMap: make(map[string]*config.JSONFilter),
 	}
 	dconfig := config.DefaultConfig
 	if err := cfg.Unpack(&dconfig); err != nil {
@@ -61,7 +68,7 @@ func (bt *dbeat) setMLConfig() {
 		if mlMap != nil {
 			for name, value := range mlMap {
 				if strings.ToLower(name) == "activated" {
-					if strings.ToLower(value) == "false" {
+					if strings.ToLower(value) == sfalse {
 						ml.Activated = false
 					}
 				}
@@ -72,12 +79,12 @@ func (bt *dbeat) setMLConfig() {
 					ml.Pattern = value
 				}
 				if strings.ToLower(name) == "negate" {
-					if strings.ToLower(value) == "true" {
+					if strings.ToLower(value) == strue {
 						ml.Negate = true
 					}
 				}
 				if strings.ToLower(name) == "append" {
-					if strings.ToLower(value) == "false" {
+					if strings.ToLower(value) == sfalse {
 						ml.Append = false
 					}
 				}
@@ -94,7 +101,34 @@ func (bt *dbeat) setMLConfig() {
 		}
 		fmt.Printf("ML apply on %s name=%s: %+v\n", applyOn, mlName, ml)
 	}
-	fmt.Printf("MLContainer setting: %+v\n", bt.MLContainerMap)
+}
+
+// set log json filter configuration
+func (bt *dbeat) setJSONFilterConfig() {
+	fmt.Printf("json config: %+v\n", bt.config.LogsJSONFilters)
+	for attributeName, filterMap := range bt.config.LogsJSONFilters {
+		filter := &config.JSONFilter{Activated: true, Negate: false}
+		filter.Name = "\"" + attributeName + "\":"
+		if filterMap != nil {
+			for name, value := range filterMap {
+				if strings.ToLower(name) == "activated" {
+					if strings.ToLower(value) == sfalse {
+						filter.Activated = false
+					}
+				}
+				if strings.ToLower(name) == "pattern" {
+					filter.Pattern = value
+				}
+				if strings.ToLower(name) == "negate" {
+					if strings.ToLower(value) == strue {
+						filter.Negate = true
+					}
+				}
+			}
+		}
+		bt.JSONFiltersMap[attributeName] = filter
+		fmt.Printf("JSON Filter apply for attribut %s: %+v\n", attributeName, filter)
+	}
 }
 
 // set custom label configuration using env variable
@@ -149,6 +183,7 @@ func (bt *dbeat) Run(b *beat.Beat) error {
 	bt.setMLConfig()
 	bt.setCLConfig()
 	bt.setExcludedConfig()
+	bt.setJSONFilterConfig()
 	bt.initAPI()
 	fmt.Printf("Config: %+v\n", bt.config)
 	bt.beaterStarted = true
@@ -158,6 +193,7 @@ func (bt *dbeat) Run(b *beat.Beat) error {
 	if err != nil {
 		return err
 	}
+	//bt.eventStreamReading = true
 	for _, cont := range containers {
 		bt.addContainer(cont.ID)
 	}

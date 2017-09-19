@@ -26,6 +26,8 @@ type Config struct {
 	ExcludedContainers   []string                     `config:"excluded_containers"`
 	ExcludedServices     []string                     `config:"excluded_services"`
 	ExcludedStacks       []string                     `config:"excluded_stacks"`
+	LogsJSONOnly         bool                         `config:"logs_json_only"`
+	LogsJSONFilters      map[string]map[string]string `config:"logs_json_filters"`
 }
 
 // MLConfig multiline config struct
@@ -34,6 +36,14 @@ type MLConfig struct {
 	Pattern   string
 	Negate    bool
 	Append    bool
+}
+
+// JSONFilter json filter config struct
+type JSONFilter struct {
+	Name      string
+	Pattern   string
+	Negate    bool
+	Activated bool
 }
 
 //DefaultConfig dbeat default config
@@ -53,4 +63,6 @@ var DefaultConfig = Config{
 	ExcludedContainers:   make([]string, 0),
 	ExcludedServices:     make([]string, 0),
 	ExcludedStacks:       make([]string, 0),
+	LogsJSONOnly:         false,
+	LogsJSONFilters:      make(map[string]map[string]string),
 }

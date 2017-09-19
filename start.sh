@@ -1,5 +1,5 @@
 cd /etc/dbeat
-echo starting updater
+echo starting conffile updater
 ./updater
 cat /etc/beatconf/dbeat.yml
 echo starting dbeat

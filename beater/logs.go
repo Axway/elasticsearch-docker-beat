@@ -89,18 +89,57 @@ func (a *dbeat) startReadingLogs(ID string, data *ContainerData) {
 		now := time.Now()
 		data.sdate = line[8:38]
 		slog := strings.TrimSuffix(line[39:], "\n")
-		timestamp, err := time.Parse("2006-01-02T15:04:05.000000000Z", data.sdate)
-		if err != nil {
-			timestamp = now
-		}
+		if !a.isJSONFiltered(slog) {
+			timestamp, err := time.Parse("2006-01-02T15:04:05.000000000Z", data.sdate)
+			if err != nil {
+				timestamp = now
+			}
 
-		if !data.mlConfig.Activated {
-			a.publishEvent(data, timestamp, slog)
-		} else {
-			a.groupEvent(data, timestamp, slog)
+			if !data.mlConfig.Activated {
+				a.publishEvent(data, timestamp, slog)
+			} else {
+				a.groupEvent(data, timestamp, slog)
+			}
 		}
 
 	}
+}
+
+func (a *dbeat) isJSONFiltered(line string) bool {
+	if len(line) == 0 || line[0] != '{' {
+		return a.config.LogsJSONOnly
+	}
+	for _, filter := range a.JSONFiltersMap {
+		ret := false
+		if nn := strings.Index(line, filter.Name); nn > 0 {
+			ret = true
+			if filter.Pattern != "" {
+				value := a.getJSONValue(line[nn:])
+				if ok, _ := regexp.MatchString(filter.Pattern, value); !ok {
+					ret = false
+				}
+			}
+		}
+		if filter.Negate {
+			ret = !ret
+		}
+		if ret {
+			return true
+		}
+	}
+	return false
+}
+
+func (a *dbeat) getJSONValue(line string) string {
+	if n1 := strings.IndexAny(line, ":"); n1 > 0 {
+		if n2 := strings.IndexAny(line[n1+1:], ",}"); n2 > 0 {
+			val := line[n1+1 : n1+n2]
+			val = strings.Replace(val, "\"", " ", -1)
+			val = strings.TrimSpace(val)
+			return val
+		}
+	}
+	return ""
 }
 
 //group event logs concidering the logsMultiline setting

@@ -277,6 +277,60 @@ excluded_stacks:
 
 to exclude all containers of the stacks having name maching with regexp pattern1 or pattern2
 
+
+#### JSON messages filter
+
+to filter specific JSON logs:
+
+```
+  logs_json_filters:
+    {attrName}:
+      pattern: {a valid regexp pattern}
+      negate: [true, false]
+      activated: [true, false]
+
+  logs_json_only: [true, false]
+```
+
+where:
+- attrName: no default, is a json attribut name
+- pattern: is a valid regexp pattern on which the value of the json attribut should match. If no pattern is defined, then any value match.
+- negate: default false, if true, indicate that the negation of pattern regexp is taken as result of the evaluation
+- activated: default true, to be able to invalidate the setting without removing the setting values from the configuration file
+- logs_json_only: default false, if true, filter all logs which have not a json format
+
+
+for instance:
+
+```
+  logs_json_filters:
+    test:
+```
+will filter all json log having an attribut `test` no matter its value
+
+```
+  logs_json_filters:
+    test:
+      negate: true
+```
+will filter all json log which don't have an attribut `test` no matter its value
+
+```
+  logs_json_filters:
+    test:
+      pattern: myValue
+```
+will filter all json log having an attribut `test` with the value `myValue`
+
+```
+  logs_json_filters:
+    trcbltPartitionId:
+      negate: true
+  logs_json_only: true
+```
+will filter all json log which don't have an attribut `trcbltPartitionId` no matter its value and filter all messages which don't have a json format
+
+
 #### sample
 
 ```
