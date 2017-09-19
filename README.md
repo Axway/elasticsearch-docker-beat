@@ -367,42 +367,40 @@ will filter all json log which don't have an attribut `trcbltPartitionId` no mat
 #### setting example
 
 ```
-# event types enabled or not
 net: false
 memory: false
 io: false
 cpu: false
 logs: true
 
-# period of time in second the logs position is saved
 logs_position_save_period: 5
 
-# logs multiline setting
 logs_multiline:
-    default:
-      pattern: '^[0-9]{4}/[0-9]{2}/[0-9]{2}'
-      negate: true
-    test:
-      applyOn: container
-      pattern: '^[0-9]{4}-[0-9]{2}-[0-9]{2}'
-      negate: true
-    dbeat:
-      applyOn: service
-      pattern: '^\s'
-      negate: true
+  default:
+    pattern: '^[0-9]{4}/[0-9]{2}/[0-9]{2}'
+    negate: true
+  test:
+    applyOn: container
+    pattern: '^[0-9]{4}-[0-9]{2}-[0-9]{2}'
+    negate: true
+  dbeat:
+    applyOn: service
+    pattern: '^\s'
+    negate: true
 
- custom_labels:
-    - axway-target-flow
-    - '^test-'
+custom_labels:
+  - axway-target-flow
+  - '^test-'
 
-  exclude_services:
-    - logstash
-    - dbeat
+exclude_services:
+  - logstash
+  - dbeat
 
-  logs_json_filters:
-    trcbltPartitionId:
-      negate: true
-  logs_json_only: true
+logs_json_filters:
+  trcbltPartitionId:
+    negate: true
+    
+logs_json_only: true
 ```
 
 #### Configure using environment variables
