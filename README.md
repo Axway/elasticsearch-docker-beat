@@ -339,21 +339,21 @@ for instance:
   logs_json_filters:
     test:
 ```
-will filter all json log having an attribut `test` no matter its value
+filter all json log having an attribut `test` no matter its value
 
 ```
   logs_json_filters:
     test:
       negate: true
 ```
-will filter all json log which don't have an attribut `test` no matter its value
+filters all json log which don't have an attribut `test` no matter its value
 
 ```
   logs_json_filters:
     test:
       pattern: myValue
 ```
-will filter all json log having an attribut `test` with the value `myValue`
+filters all json log having an attribut `test` with the value `myValue`
 
 ```
   logs_json_filters:
@@ -361,7 +361,7 @@ will filter all json log having an attribut `test` with the value `myValue`
       negate: true
   logs_json_only: true
 ```
-will filter all json log which don't have an attribut `trcbltPartitionId` no matter its value and filter all messages which don't have a json format
+filters all json log which don't have an attribut `trcbltPartitionId` no matter its value and filter all messages which don't have a json format
 
 
 #### setting example
@@ -399,7 +399,7 @@ exclude_services:
 logs_json_filters:
   trcbltPartitionId:
     negate: true
-    
+
 logs_json_only: true
 ```
 
