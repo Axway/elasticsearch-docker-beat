@@ -160,6 +160,7 @@ Configuration file is `dbeat-confimage.yml` in the project.
 
 By default, this file is copied in the image at image build step, but it's possible:
 - to use an external configuration file (see chapter `use an external configuration file`)
+- to use a docker-compose file v3.3, with a `configs:` statement (see chapter `use a docker-compose file v3.3`)
 - to use environment variables (see chapter `configure using environment variables`)
 
 #### Use an external configuration file
@@ -187,6 +188,38 @@ define that dbeat is going to use the file /tmp/myconffile.yml on the host as it
 
 
 The dbeat conffile contains the common beat configuration (common to all Elasticsearch beats) and some dbeat specific settings:
+
+#### use a docker-compose file v3.3
+
+```
+version: "3.3"
+
+networks:
+  default:
+    external:
+      name: aNetwork
+
+volumes:
+  dbeat:
+
+services:
+
+  dbeat:
+    image: axway/elasticsearch-docker-beat:latest
+    volumes:
+      - dbeat:/containers
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      mode: global
+    configs:
+          - source: dbeat_config
+            target: /etc/beatconf/dbeat.yml
+
+configs:
+  dbeat_config:
+    file: [your directory]/dbeat.conf
+```
+
 
 #### output settings
 
@@ -331,7 +364,7 @@ will filter all json log having an attribut `test` with the value `myValue`
 will filter all json log which don't have an attribut `trcbltPartitionId` no matter its value and filter all messages which don't have a json format
 
 
-#### sample
+#### setting example
 
 ```
 # event types enabled or not
