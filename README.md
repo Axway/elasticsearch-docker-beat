@@ -363,8 +363,13 @@ logs_multiline:
     - '^test-'
 
   exclude_services:
-    - test_dbeat
+    - logstash
+    - dbeat
 
+  logs_json_filters:
+    trcbltPartitionId:
+      negate: true
+  logs_json_only: true
 ```
 
 #### Configure using environment variables
