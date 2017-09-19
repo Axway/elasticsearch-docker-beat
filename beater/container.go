@@ -296,7 +296,7 @@ func (a *dbeat) getHostIP() string {
 }
 
 func (a *dbeat) getHostname() string {
-	return a.getHTTPString("http://169.254.169.254/latest/meta-data/hostname")
+	return a.getHTTPString("http://169.254.169.254/latest/meta-data/local-hostname")
 }
 
 func (a *dbeat) getHTTPString(url string) string {
