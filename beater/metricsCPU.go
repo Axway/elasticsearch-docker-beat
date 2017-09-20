@@ -50,6 +50,7 @@ func (a *dbeat) publishCPUMetrics(stats *types.StatsJSON, data *ContainerData) {
 		"stack_name":           data.stackName,
 		"host_ip":              data.hostIP,
 		"hostname":             data.hostname,
+		"beat.name":            dbeatName,
 		"cpu": common.MapStr{
 			"percpuUsage":       diff.PerCPUUsage,
 			"totalUsage":        diff.TotalUsage,

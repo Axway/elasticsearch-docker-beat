@@ -57,6 +57,7 @@ func (a *dbeat) publishNetMetrics(stats *types.StatsJSON, data *ContainerData) {
 		"stack_name":           data.stackName,
 		"host_ip":              data.hostIP,
 		"hostname":             data.hostname,
+		"beat.name":            dbeatName,
 		"net": common.MapStr{
 			"totalBytes": diff.RxBytes + diff.TxBytes,
 			"rxBytes":    diff.RxBytes,

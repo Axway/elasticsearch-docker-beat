@@ -20,11 +20,12 @@ import (
 )
 
 const (
-	sfalse = "false"
-	strue  = "true"
+	sfalse    = "false"
+	strue     = "true"
+	dbeatName = "dbeat"
 )
 
-// dbeat the amp beat struct
+// dbeat the dbeat struct
 type dbeat struct {
 	done                chan struct{}
 	config              config.Config
@@ -48,7 +49,7 @@ type dbeat struct {
 
 // New Creates beater
 func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
-	fmt.Println("dbeat version 0.0.3 b13")
+	fmt.Println("dbeat version 0.0.3 b14")
 	bt := &dbeat{
 		done:           make(chan struct{}),
 		MLStackMap:     make(map[string]*config.MLConfig),

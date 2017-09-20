@@ -19,6 +19,7 @@ func (a *dbeat) publishMemMetrics(stats *types.StatsJSON, data *ContainerData) {
 		"stack_name":           data.stackName,
 		"host_ip":              data.hostIP,
 		"hostname":             data.hostname,
+		"beat.name":            dbeatName,
 		"memory": common.MapStr{
 			"failcnt":  int64(stats.MemoryStats.Failcnt),
 			"limit":    int64(stats.MemoryStats.Limit),

@@ -211,6 +211,7 @@ func (a *dbeat) publishEvent(data *ContainerData, timestamp time.Time, slog stri
 		"host_ip":           data.hostIP,
 		"hostname":          data.hostname,
 		"axway-target-flow": data.axwayTargetFlow,
+		"beat.name":         dbeatName,
 		"message":           slog,
 	}
 	for labelName, labelValue := range data.customLabelsMap {
