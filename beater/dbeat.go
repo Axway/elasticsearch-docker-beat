@@ -30,6 +30,7 @@ type dbeat struct {
 	dockerClient        *client.Client
 	eventStreamReading  bool
 	containers          map[string]*ContainerData
+	nodes               map[string]string
 	lastUpdate          time.Time
 	logsSavedDatePeriod int
 	nbLogs              int
@@ -51,6 +52,7 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 		MLServiceMap:   make(map[string]*config.MLConfig),
 		MLContainerMap: make(map[string]*config.MLConfig),
 		JSONFiltersMap: make(map[string]*config.JSONFilter),
+		nodes:          make(map[string]string),
 	}
 	dconfig := config.DefaultConfig
 	if err := cfg.Unpack(&dconfig); err != nil {

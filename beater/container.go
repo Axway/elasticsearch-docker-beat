@@ -187,7 +187,7 @@ func (a *dbeat) addContainer(ID string) {
 				data.stackName = "noStack"
 			}
 			data.hostIP = a.getHostIP()
-			data.hostname = a.getHostname()
+			data.hostname = a.getHostname(data.nodeID)
 			if inspect.State.Health != nil {
 				data.health = inspect.State.Health.Status
 			}
@@ -295,8 +295,16 @@ func (a *dbeat) getHostIP() string {
 	return a.getHTTPString("http://169.254.169.254/latest/meta-data/local-ipv4")
 }
 
-func (a *dbeat) getHostname() string {
-	return a.getHTTPString("http://169.254.169.254/latest/meta-data/local-hostname")
+func (a *dbeat) getHostname(nodeID string) string {
+	if hostname, ok := a.nodes[nodeID]; ok {
+		return hostname
+	}
+	if node, _, err := a.dockerClient.NodeInspectWithRaw(context.Background(), nodeID); err == nil {
+		hostname := node.Description.Hostname
+		a.nodes[nodeID] = hostname
+		return hostname
+	}
+	return ""
 }
 
 func (a *dbeat) getHTTPString(url string) string {
