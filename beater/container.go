@@ -32,7 +32,6 @@ type ContainerData struct {
 	serviceName     string
 	serviceID       string
 	stackName       string
-	taskID          string
 	nodeID          string
 	pid             int
 	state           string
@@ -56,6 +55,7 @@ type ContainerData struct {
 	//container config
 	mlConfig        *config.MLConfig
 	customLabelsMap map[string]string
+	plainFilters    []string
 }
 
 //AgentStart Connect to docker engine, get initial containers list and start the agent
@@ -162,14 +162,14 @@ func (a *dbeat) addContainer(ID string) {
 				lastLog:         "",
 				lastLogTime:     time.Now(),
 				customLabelsMap: make(map[string]string),
+				plainFilters:    a.config.LogsPlainFilters,
 			}
 			fmt.Printf("Container %s state: %s\n", data.name, data.state)
 			if data.state == "exited" || data.state == "dead" {
 				return
 			}
-			a.setMultilineSetting(&data)
-			fmt.Printf("Multiline setting: %+v\n", data.mlConfig)
-
+			data.name = strings.Replace(data.name, "/", "", 1)
+			data.name = strings.TrimSpace(data.name)
 			labels := inspect.Config.Labels
 			//data.serviceName = a.getMapValue(labels, "com.docker.swarm.service.name")
 			data.serviceName = strings.TrimPrefix(labels["com.docker.swarm.service.name"], labels["com.docker.stack.namespace"]+"_")
@@ -178,7 +178,6 @@ func (a *dbeat) addContainer(ID string) {
 			}
 			data.shortName = fmt.Sprintf("%s_%d", data.serviceName, data.pid)
 			data.serviceID = a.getMapValue(labels, "com.docker.swarm.service.id")
-			data.taskID = a.getMapValue(labels, "com.docker.swarm.task.id")
 			data.nodeID = a.getMapValue(labels, "com.docker.swarm.node.id")
 			data.stackName = a.getMapValue(labels, "com.docker.stack.namespace")
 			if data.stackName == "" {
@@ -192,6 +191,10 @@ func (a *dbeat) addContainer(ID string) {
 			if a.isExcluded(&data) {
 				return
 			}
+			a.setMultilineSetting(&data)
+			fmt.Printf("Multiline setting: %+v\n", data.mlConfig)
+			a.setPlainFiltersSetting(&data)
+			fmt.Printf("Plain filter setting: %+v\n", data.plainFilters)
 			for _, pattern := range a.config.CustomLabels {
 				for labelName, labelValue := range labels {
 					if ok, _ := regexp.MatchString(pattern, labelName); ok {
@@ -234,11 +237,11 @@ func (a *dbeat) setMultilineSetting(data *ContainerData) {
 		data.mlConfig = ml
 		return
 	}
-	if ml, ok := a.MLServiceMap[data.name]; ok {
+	if ml, ok := a.MLServiceMap[data.serviceName]; ok {
 		data.mlConfig = ml
 		return
 	}
-	if ml, ok := a.MLStackMap[data.name]; ok {
+	if ml, ok := a.MLStackMap[data.stackName]; ok {
 		data.mlConfig = ml
 		return
 	}
@@ -247,6 +250,22 @@ func (a *dbeat) setMultilineSetting(data *ContainerData) {
 		return
 	}
 	data.mlConfig = &config.MLConfig{Activated: false}
+}
+
+func (a *dbeat) setPlainFiltersSetting(data *ContainerData) {
+	if pf, ok := a.config.LogsPlainFiltersContainers[data.name]; ok {
+		data.plainFilters = pf
+		return
+	}
+	if pf, ok := a.config.LogsPlainFiltersServices[data.serviceName]; ok {
+		data.plainFilters = pf
+		return
+	}
+	if pf, ok := a.config.LogsPlainFiltersStacks[data.stackName]; ok {
+		data.plainFilters = pf
+		return
+	}
+	data.plainFilters = a.config.LogsPlainFilters
 }
 
 //Suppress a container from the main container map

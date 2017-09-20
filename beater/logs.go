@@ -89,7 +89,7 @@ func (a *dbeat) startReadingLogs(ID string, data *ContainerData) {
 		now := time.Now()
 		data.sdate = line[8:38]
 		slog := strings.TrimSuffix(line[39:], "\n")
-		if !a.isJSONFiltered(slog) && !a.isPlainFiltered(slog) {
+		if !a.isJSONFiltered(slog) && !a.isPlainFiltered(data, slog) {
 			timestamp, err := time.Parse("2006-01-02T15:04:05.000000000Z", data.sdate)
 			if err != nil {
 				timestamp = now
@@ -130,8 +130,8 @@ func (a *dbeat) isJSONFiltered(line string) bool {
 	return false
 }
 
-func (a *dbeat) isPlainFiltered(line string) bool {
-	for _, pattern := range a.config.LogsPlainFilters {
+func (a *dbeat) isPlainFiltered(data *ContainerData, line string) bool {
+	for _, pattern := range data.plainFilters {
 		if ok, _ := regexp.MatchString(pattern, line); ok {
 			return true
 		}
@@ -206,7 +206,6 @@ func (a *dbeat) publishEvent(data *ContainerData, timestamp time.Time, slog stri
 		"container_state":   data.state,
 		"service_name":      data.serviceName,
 		"service_id":        data.serviceID,
-		"task_id":           data.taskID,
 		"stack_name":        data.stackName,
 		"node_id":           data.nodeID,
 		"host_ip":           data.hostIP,

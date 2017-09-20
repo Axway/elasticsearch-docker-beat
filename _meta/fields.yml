@@ -36,11 +36,6 @@
       description: >
         The Docker service id of the container, if exist
 
-    - name: "task_id"
-      type: keyword
-      description: >
-        The Docker task id of the container
-
     - name: "stack_name"
       type: keyword
       description: >
@@ -50,11 +45,6 @@
       type: keyword
       description: >
         The Docker node id on which the container has been launched
-
-    - name: "role"
-      type: keyword
-      description: >
-        dedicated amp field: amp role
 
     - name: "host_addr"
       type: text

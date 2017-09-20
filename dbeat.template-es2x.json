@@ -219,11 +219,6 @@
         "read": {
           "type": "long"
         },
-        "role": {
-          "ignore_above": 1024,
-          "index": "not_analyzed",
-          "type": "string"
-        },
         "rxBytes": {
           "type": "long"
         },
@@ -257,11 +252,6 @@
           "type": "string"
         },
         "tags": {
-          "ignore_above": 1024,
-          "index": "not_analyzed",
-          "type": "string"
-        },
-        "task_id": {
           "ignore_above": 1024,
           "index": "not_analyzed",
           "type": "string"

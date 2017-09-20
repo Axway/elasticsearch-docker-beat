@@ -188,10 +188,6 @@
         "read": {
           "type": "long"
         },
-        "role": {
-          "ignore_above": 1024,
-          "type": "keyword"
-        },
         "rxBytes": {
           "type": "long"
         },
@@ -221,10 +217,6 @@
           "type": "keyword"
         },
         "tags": {
-          "ignore_above": 1024,
-          "type": "keyword"
-        },
-        "task_id": {
           "ignore_above": 1024,
           "type": "keyword"
         },

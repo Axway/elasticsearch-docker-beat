@@ -1,13 +1,12 @@
 ################### dbeat Configuration Example #########################
 
 ############################# dbeat ######################################
+name: dbeat
 
 dbeat:
-  # Defines how often the stat is sent to the output
-  period: ${PERIOD:3s}
 
-  # REST Server port (to check health)
-  rest_port: 3000
+  # Defines how often the stat is sent to the output
+  period: ${SENT_PERIOD:10s}
 
   # Defines the docker url
   docker_url: ${DOCKER_SOCKET:unix:///var/run/docker.sock}
@@ -24,12 +23,22 @@ dbeat:
   # Path to the key file
   key_path: ${DOCKER_KEY_PATH:}
 
-  # event types enqabled or not
-  net: false
-  memory: false
-  io: false
-  cpu: false
-  logs: true
+  # event types enabled or not
+  net: ${METRICS_NET:false}
+  memory: ${METRICS_MEMORY:false}
+  io: ${METRICS_IO:false}
+  cpu: ${METRICS_CPU:false}
+  logs: ${LOGS:true}
+
+  # period of time in second the logs position is saved
+  logs_position_save_period: ${LOGS_POSITION_SAVE_PERIOD:5}
+
+  # settable using variable CUSTOM_LABELS=pattern1,parttern2,...
+  custom_labels:
+    - axway-target-flow
+
+  excluded_services:
+    - logstash
 
 #================================ General =====================================
 

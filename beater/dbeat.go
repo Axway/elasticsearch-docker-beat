@@ -43,20 +43,18 @@ type dbeat struct {
 	MLServiceMap        map[string]*config.MLConfig
 	MLContainerMap      map[string]*config.MLConfig
 	JSONFiltersMap      map[string]*config.JSONFilter
-	PlainFiltersMap     []string
 	beaterStarted       bool
 }
 
 // New Creates beater
 func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
-	fmt.Println("dbeat version 0.0.3 b12")
+	fmt.Println("dbeat version 0.0.3 b13")
 	bt := &dbeat{
-		done:            make(chan struct{}),
-		MLStackMap:      make(map[string]*config.MLConfig),
-		MLServiceMap:    make(map[string]*config.MLConfig),
-		MLContainerMap:  make(map[string]*config.MLConfig),
-		JSONFiltersMap:  make(map[string]*config.JSONFilter),
-		PlainFiltersMap: make([]string, 0),
+		done:           make(chan struct{}),
+		MLStackMap:     make(map[string]*config.MLConfig),
+		MLServiceMap:   make(map[string]*config.MLConfig),
+		MLContainerMap: make(map[string]*config.MLConfig),
+		JSONFiltersMap: make(map[string]*config.JSONFilter),
 	}
 	dconfig := config.DefaultConfig
 	if err := cfg.Unpack(&dconfig); err != nil {
@@ -97,11 +95,11 @@ func (bt *dbeat) setMLConfig() {
 				if strings.ToLower(mlName) == "default" {
 					bt.MLDefault = ml
 				} else if applyOn == "container" {
-					bt.MLContainerMap["/"+mlName] = ml
+					bt.MLContainerMap[mlName] = ml
 				} else if applyOn == "service" {
-					bt.MLServiceMap["/"+mlName] = ml
+					bt.MLServiceMap[mlName] = ml
 				} else if applyOn == "stack" {
-					bt.MLStackMap["/"+mlName] = ml
+					bt.MLStackMap[mlName] = ml
 				}
 			}
 		}

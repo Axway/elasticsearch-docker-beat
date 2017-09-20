@@ -47,7 +47,6 @@ func (a *dbeat) publishCPUMetrics(stats *types.StatsJSON, data *ContainerData) {
 		"container_state":      data.state,
 		"service_name":         data.serviceName,
 		"service_id":           data.serviceID,
-		"task_id":              data.taskID,
 		"stack_name":           data.stackName,
 		"host_ip":              data.hostIP,
 		"hostname":             data.hostname,

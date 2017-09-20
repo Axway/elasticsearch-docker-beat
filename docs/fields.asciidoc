@@ -372,14 +372,6 @@ The Docker service id of the container, if exist
 
 
 [float]
-=== task_id
-
-type: keyword
-
-The Docker task id of the container
-
-
-[float]
 === stack_name
 
 type: keyword
@@ -393,14 +385,6 @@ The Docker stack name of the container, if exist
 type: keyword
 
 The Docker node id on which the container has been launched
-
-
-[float]
-=== role
-
-type: keyword
-
-dedicated amp field: amp role
 
 
 [float]
