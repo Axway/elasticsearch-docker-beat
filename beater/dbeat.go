@@ -43,6 +43,7 @@ type dbeat struct {
 	MLServiceMap        map[string]*config.MLConfig
 	MLContainerMap      map[string]*config.MLConfig
 	JSONFiltersMap      map[string]*config.JSONFilter
+	PlainFiltersMap     []string
 	beaterStarted       bool
 }
 
@@ -50,11 +51,12 @@ type dbeat struct {
 func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 	fmt.Println("dbeat version 0.0.3 b12")
 	bt := &dbeat{
-		done:           make(chan struct{}),
-		MLStackMap:     make(map[string]*config.MLConfig),
-		MLServiceMap:   make(map[string]*config.MLConfig),
-		MLContainerMap: make(map[string]*config.MLConfig),
-		JSONFiltersMap: make(map[string]*config.JSONFilter),
+		done:            make(chan struct{}),
+		MLStackMap:      make(map[string]*config.MLConfig),
+		MLServiceMap:    make(map[string]*config.MLConfig),
+		MLContainerMap:  make(map[string]*config.MLConfig),
+		JSONFiltersMap:  make(map[string]*config.JSONFilter),
+		PlainFiltersMap: make([]string, 0),
 	}
 	dconfig := config.DefaultConfig
 	if err := cfg.Unpack(&dconfig); err != nil {
@@ -109,7 +111,7 @@ func (bt *dbeat) setMLConfig() {
 
 // set log json filter configuration
 func (bt *dbeat) setJSONFilterConfig() {
-	fmt.Printf("json config: %+v\n", bt.config.LogsJSONFilters)
+	fmt.Printf("json filter config: %+v\n", bt.config.LogsJSONFilters)
 	for attributeName, filterMap := range bt.config.LogsJSONFilters {
 		filter := &config.JSONFilter{Activated: true, Negate: false}
 		filter.Name = "\"" + attributeName + "\":"

@@ -89,7 +89,7 @@ func (a *dbeat) startReadingLogs(ID string, data *ContainerData) {
 		now := time.Now()
 		data.sdate = line[8:38]
 		slog := strings.TrimSuffix(line[39:], "\n")
-		if !a.isJSONFiltered(slog) {
+		if !a.isJSONFiltered(slog) && !a.isPlainFiltered(slog) {
 			timestamp, err := time.Parse("2006-01-02T15:04:05.000000000Z", data.sdate)
 			if err != nil {
 				timestamp = now
@@ -124,6 +124,15 @@ func (a *dbeat) isJSONFiltered(line string) bool {
 			ret = !ret
 		}
 		if ret {
+			return true
+		}
+	}
+	return false
+}
+
+func (a *dbeat) isPlainFiltered(line string) bool {
+	for _, pattern := range a.config.LogsPlainFilters {
+		if ok, _ := regexp.MatchString(pattern, line); ok {
 			return true
 		}
 	}

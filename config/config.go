@@ -28,6 +28,7 @@ type Config struct {
 	ExcludedStacks       []string                     `config:"excluded_stacks"`
 	LogsJSONOnly         bool                         `config:"logs_json_only"`
 	LogsJSONFilters      map[string]map[string]string `config:"logs_json_filters"`
+	LogsPlainFilters     []string                     `config:"logs_plain_filters"`
 }
 
 // MLConfig multiline config struct
@@ -65,4 +66,5 @@ var DefaultConfig = Config{
 	ExcludedStacks:       make([]string, 0),
 	LogsJSONOnly:         false,
 	LogsJSONFilters:      make(map[string]map[string]string),
+	LogsPlainFilters:     make([]string, 0),
 }
