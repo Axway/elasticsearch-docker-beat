@@ -363,6 +363,28 @@ logs_json_only: true
 ```
 filters all json log which don't have an attribut `trcbltPartitionId` no matter its value and filter all messages which don't have a json format
 
+#### plain messages filter
+
+to filter specific logs:
+
+```
+logs_plain_filters:
+  - pattern1
+  - pattern2
+  - ...
+```
+A logs event is filtered if its message match with one of the patterns.
+
+
+for instance:
+
+```
+logs_plain_filters:
+  - 'logs sent during last period'
+  - 'Non-zero metrics in the last'
+```
+filters the log messages starting by `logs sent during last period` or `Non-zero metrics in the last`
+
 
 #### setting example
 
