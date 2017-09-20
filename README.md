@@ -316,13 +316,13 @@ to exclude all containers of the stacks having name maching with regexp pattern1
 to filter specific JSON logs:
 
 ```
-  logs_json_filters:
-    {attrName}:
-      pattern: {a valid regexp pattern}
-      negate: [true, false]
-      activated: [true, false]
+logs_json_filters:
+  {attrName}:
+    pattern: {a valid regexp pattern}
+    negate: [true, false]
+    activated: [true, false]
 
-  logs_json_only: [true, false]
+logs_json_only: [true, false]
 ```
 
 where:
@@ -336,30 +336,30 @@ where:
 for instance:
 
 ```
-  logs_json_filters:
-    test:
+logs_json_filters:
+  test:
 ```
 filter all json log having an attribut `test` no matter its value
 
 ```
-  logs_json_filters:
-    test:
-      negate: true
+logs_json_filters:
+  test:
+    negate: true
 ```
 filters all json log which don't have an attribut `test` no matter its value
 
 ```
-  logs_json_filters:
-    test:
-      pattern: myValue
+logs_json_filters:
+  test:
+    pattern: myValue
 ```
 filters all json log having an attribut `test` with the value `myValue`
 
 ```
-  logs_json_filters:
-    trcbltPartitionId:
-      negate: true
-  logs_json_only: true
+logs_json_filters:
+  trcbltPartitionId:
+    negate: true
+logs_json_only: true
 ```
 filters all json log which don't have an attribut `trcbltPartitionId` no matter its value and filter all messages which don't have a json format
 
