@@ -299,8 +299,8 @@ func (a *dbeat) getHostname(nodeID string) string {
 	if hostname, ok := a.nodes[nodeID]; ok {
 		return hostname
 	}
-	if node, _, err := a.dockerClient.NodeInspectWithRaw(context.Background(), nodeID); err == nil {
-		hostname := node.Description.Hostname
+	if info, err := a.dockerClient.Info(context.Background()); err == nil {
+		hostname := info.Name
 		a.nodes[nodeID] = hostname
 		return hostname
 	}
