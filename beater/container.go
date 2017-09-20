@@ -4,9 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
-	"net/http"
 	"os"
 	"path"
 	"regexp"
@@ -186,8 +184,8 @@ func (a *dbeat) addContainer(ID string) {
 			if data.stackName == "" {
 				data.stackName = "noStack"
 			}
-			data.hostIP = a.getHostIP()
-			data.hostname = a.getHostname(data.nodeID)
+			data.hostIP = a.hostIP
+			data.hostname = a.hostname
 			if inspect.State.Health != nil {
 				data.health = inspect.State.Health.Status
 			}
@@ -289,39 +287,6 @@ func (a *dbeat) getMapValue(labelMap map[string]string, name string) string {
 		return val
 	}
 	return ""
-}
-
-func (a *dbeat) getHostIP() string {
-	return a.getHTTPString("http://169.254.169.254/latest/meta-data/local-ipv4")
-}
-
-func (a *dbeat) getHostname(nodeID string) string {
-	if hostname, ok := a.nodes[nodeID]; ok {
-		return hostname
-	}
-	if info, err := a.dockerClient.Info(context.Background()); err == nil {
-		hostname := info.Name
-		a.nodes[nodeID] = hostname
-		return hostname
-	}
-	return ""
-}
-
-func (a *dbeat) getHTTPString(url string) string {
-	timeout := time.Duration(1 * time.Second)
-	client := http.Client{
-		Timeout: timeout,
-	}
-	res, err := client.Get(url)
-	if err != nil {
-		return ""
-	}
-	defer res.Body.Close()
-	data, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		return ""
-	}
-	return string(data)
 }
 
 // Close dbeat ressources

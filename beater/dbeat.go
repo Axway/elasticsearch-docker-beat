@@ -3,7 +3,9 @@ package beater
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 	"strings"
 	"time"
@@ -30,7 +32,8 @@ type dbeat struct {
 	dockerClient        *client.Client
 	eventStreamReading  bool
 	containers          map[string]*ContainerData
-	nodes               map[string]string
+	hostname            string
+	hostIP              string
 	lastUpdate          time.Time
 	logsSavedDatePeriod int
 	nbLogs              int
@@ -45,14 +48,13 @@ type dbeat struct {
 
 // New Creates beater
 func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
-	fmt.Println("dbeat version 0.0.2 b11")
+	fmt.Println("dbeat version 0.0.2 b12")
 	bt := &dbeat{
 		done:           make(chan struct{}),
 		MLStackMap:     make(map[string]*config.MLConfig),
 		MLServiceMap:   make(map[string]*config.MLConfig),
 		MLContainerMap: make(map[string]*config.MLConfig),
 		JSONFiltersMap: make(map[string]*config.JSONFilter),
-		nodes:          make(map[string]string),
 	}
 	dconfig := config.DefaultConfig
 	if err := cfg.Unpack(&dconfig); err != nil {
@@ -188,6 +190,10 @@ func (bt *dbeat) Run(b *beat.Beat) error {
 	bt.setJSONFilterConfig()
 	bt.initAPI()
 	fmt.Printf("Config: %+v\n", bt.config)
+	if info, errc := bt.dockerClient.Info(context.Background()); errc == nil {
+		bt.hostname = info.Name
+	}
+	bt.hostIP = bt.getHostIP()
 	bt.beaterStarted = true
 	bt.containers = make(map[string]*ContainerData)
 	ContainerListOptions := types.ContainerListOptions{All: true}
@@ -211,6 +217,27 @@ func (bt *dbeat) Run(b *beat.Beat) error {
 
 		bt.tick()
 	}
+}
+
+func (bt *dbeat) getHostIP() string {
+	return bt.getHTTPString("http://169.254.169.254/latest/meta-data/local-ipv4")
+}
+
+func (bt *dbeat) getHTTPString(url string) string {
+	timeout := time.Duration(1 * time.Second)
+	client := http.Client{
+		Timeout: timeout,
+	}
+	res, err := client.Get(url)
+	if err != nil {
+		return ""
+	}
+	defer res.Body.Close()
+	data, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return ""
+	}
+	return string(data)
 }
 
 // Stop dbeat stop
