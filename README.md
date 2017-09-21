@@ -56,7 +56,7 @@ make create-image-test
 it creates the image `axway/elasticsearch-docker-beat:test` locally which can be used locally to test code updates.
 
 
-Available tags are: latest, 0.0.2, 0.0.3
+Available tags on docker hub are: latest, 0.0.2, 0.0.3
 
 
 ### Run in swarm context
@@ -173,7 +173,7 @@ By default, this file is copied in the image at image build step, but it's possi
 
 #### Use an external configuration file
 
- to use an external configuration file adding a volume in the container, service or stack file definition
+ to configure out of swarm context, it's possible to use an external configuration file adding a volume in the container, service or stack file definition
 
 ```
 volumes:
@@ -198,6 +198,8 @@ define that dbeat is going to use the file /tmp/myconffile.yml on the host as it
 The dbeat conffile contains the common beat configuration (common to all Elasticsearch beats) and some dbeat specific settings:
 
 #### use a docker-compose file v3.3
+
+to configure in swarm context, use a `configs:` statement in the stack file:
 
 ```
 version: "3.3"
@@ -227,6 +229,8 @@ configs:
   dbeat_config:
     file: [your directory]/dbeat.conf
 ```
+
+see `./test/dbeatLogstashSwarmStack.yml`, a full stack file example with elasticsearch, logstash, kibana and dbeat.
 
 
 #### output settings

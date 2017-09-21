@@ -1,0 +1,60 @@
+version: "3.3"
+
+networks:
+  default:
+    external:
+      name: aNetwork
+
+volumes:
+  dbeat:
+
+services:
+
+  elasticsearch:
+    image: appcelerator/elasticsearch-amp:5.5.0
+    ports:
+      - "9200:9200"
+    deploy:
+      mode: replicated
+      replicas: 1
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:5.6.0
+    networks:
+      default:
+    #volumes:
+    #  - ~/tmp/stacks/logstash/:/usr/share/logstash/pipeline/
+    #command: logstash -e 'input { beats { port => 5045 } } output { elasticsearch { hosts => "http://elasticsearch:9200" manage_template => false index => "%{[@metadata][beat]}-%{+YYYY.MM.dd}" document_type => "%{[@metadata][type]}"} }'
+    configs:
+      - source: logstash_config
+        target: /usr/share/logstash/pipeline/logstash.conf
+
+  dbeat:
+    image: axway/elasticsearch-docker-beat:test
+    networks:
+      default:
+    volumes:
+      - dbeat:/containers
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      mode: global
+    configs:
+      - source: dbeat_config
+        target: /etc/beatconf/dbeat.yml
+
+  kibana:
+    image: appcelerator/kibana:5.5.0
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    ports:
+      - "50106:5601"
+      - "443:443"
+    deploy:
+      mode: replicated
+      replicas: 1
+
+configs:
+  logstash_config:
+    file: ./conf/logstash.conf
+  dbeat_config:
+    file: ./conf/dbeat.conf
