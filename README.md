@@ -40,7 +40,7 @@ make
 To create the dbeat image `axway/elasticsearch-docker-beat:latest`, run the command bellow:
 
 ```
-make create-images
+make create-image
 ```
 
 or directly use the docker hub image, pulling it:
@@ -53,7 +53,7 @@ For test, you can create an image tagged `test` using the command:
 ```
 make create-image-test
 ```
-it creates the image `axway/elasticsearch-docker-beat:test` loccaly which can be used locally to test code updates.
+it creates the image `axway/elasticsearch-docker-beat:test` locally which can be used locally to test code updates.
 
 
 Available tags are: latest, 0.0.2, 0.0.3
