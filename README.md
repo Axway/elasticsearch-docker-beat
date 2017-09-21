@@ -388,7 +388,7 @@ logs_plain_filters:
 any logs which matches with one of the patterns is filtered
 
 
-To filter specific logs coming from specific container
+To filter specific logs coming from specific containers:
 
 ```
 logs_plain_filters_containers:
@@ -400,7 +400,7 @@ logs_plain_filters_containers:
 ```
 the logs coming from container having name `myContainer1` and which matches with `pattern1` or `pattern2` are filtered, the logs coming from container having name `myContainer2` and which matches with `pattern3` are filtered too.
 
-To filter specific logs coming from specific services
+To filter specific logs coming from specific services:
 
 ```
 logs_plain_filters_services:
@@ -412,7 +412,7 @@ logs_plain_filters_services:
 ```
 the logs coming from containers belonging to service having name `myService1` and which matches with `pattern1` or `pattern2` are filtered, the logs coming from containers belonging to service having name `myService2` and which matches with `pattern3` are filtered too.
 
-To filter specific logs coming from specific services
+To filter specific logs coming from specific stacks:
 
 ```
 logs_plain_filters_stacks:
