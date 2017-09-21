@@ -485,9 +485,9 @@ logs_json_only: true
 
 #### Configure using environment variables
 
-To configuration using environment variable, it's enough to add variables and values in container run command or service definition in docker-compose file or in stack file
+To configuration using environment variable, it's enough to add variables and values in container run command or service definition in docker-compose file or in stack file.
 
-the following variables are supported:
+The following variables are supported:
 
 - ELASTICSEARCH_HOST: format: `host:port`, define the host and port of elasticsearch,
 - ELASTICSEARCH_PROTOCOL: `http` or `https`, default http, define the protocol used with elasticsearch
@@ -508,7 +508,7 @@ the following variables are supported:
 - EXCLUDED_SERVICES: no default, list of regexp service name patterns to be excluded
 - EXCLUDED_STACKS: no default, list of regexp stack name patterns to be excluded
 
-`Warning if ELASTICSEARCH_HOST && LOGSTASH_HOST are set, only LOGSTASH_HOSTS will be taken in account`
+`Warning if ELASTICSEARCH_HOST && LOGSTASH_HOST are set together, only LOGSTASH_HOSTS will be taken in account`
 
 
 example in a stack file:
@@ -521,7 +521,7 @@ dbeat:
   environment:
     - ELASTICSEARCH_HOST=elasticsearch:9200
     - METRICS_CPU=true
-    - CUSTOM_LABELS=^test-
+    - CUSTOM_LABELS=axway-target=flow
   volumes:
     - dbeat:/containers
     - /var/run/docker.sock:/var/run/docker.sock
@@ -536,12 +536,13 @@ dbeat:
 
 Each beat has a template for the mapping in elasticsearch and a documentation for the fields
 which is automatically generated based on `etc/fields.yml`.
-To generate etc/dbeat.template.json and etc/dbeat.asciidoc
+To generate etc/dbeat.template.json and etc/dbeat.asciidoc.
 
 ```
 make update
 ```
 
+It's possible this way to define the type of a custom label for instance adding its definition in the `etc/fields.yml`
 
 ### Cleanup
 
