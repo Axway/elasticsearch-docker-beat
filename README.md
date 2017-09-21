@@ -48,7 +48,15 @@ or directly use the docker hub image, pulling it:
 docker pull axway/elasticsearch-docker-beat:latest
 ```
 
-Available tags are: latest, 0.0.2
+For test, you can create an image tagged `test` using the command:
+
+```
+make create-image-test
+```
+it creates the image `axway/elasticsearch-docker-beat:test` loccaly which can be used locally to test code updates.
+
+
+Available tags are: latest, 0.0.2, 0.0.3
 
 
 ### Run in swarm context
