@@ -365,7 +365,7 @@ filters all json log which don't have an attribut `trcbltPartitionId` no matter 
 
 #### plain messages filter
 
-to filter specific logs:
+To filter specific logs no matter from which container it comes from:
 
 ```
 logs_plain_filters:
@@ -373,17 +373,63 @@ logs_plain_filters:
   - pattern2
   - ...
 ```
-A logs event is filtered if its message match with one of the patterns.
+any logs which matches with one of the patterns is filtered
+
+
+To filter specific logs coming from specific container
+
+```
+logs_plain_filters_containers:
+  myContainer1:
+    - pattern1
+    - pattern2
+ myContainer2:
+    - pattern3
+```
+the logs coming from container having name `myContainer1` and which matches with `pattern1` or `pattern2` are filtered, the logs coming from container having name `myContainer2` and which matches with `pattern3` are filtered too.
+
+To filter specific logs coming from specific services
+
+```
+logs_plain_filters_services:
+  myServices1:
+    - pattern1
+    - pattern2
+ myServices2:
+    - pattern3
+```
+the logs coming from containers belonging to service having name `myService1` and which matches with `pattern1` or `pattern2` are filtered, the logs coming from containers belonging to service having name `myService2` and which matches with `pattern3` are filtered too.
+
+To filter specific logs coming from specific services
+
+```
+logs_plain_filters_stacks:
+  myStack1:
+    - pattern1
+    - pattern2
+ myStack2:
+    - pattern3
+```
+the logs coming from containers belonging to stack having name `myStack1` and which matches with `pattern1` or `pattern2` are filtered, the logs coming from containers belonging to stack having name `myStack2` and which matches with `pattern3` are filtered too.
 
 
 for instance:
 
 ```
 logs_plain_filters:
-  - 'logs sent during last period'
-  - 'Non-zero metrics in the last'
+  - '.*logs sent during last period'
+  - '.*zero metrics in the last'
 ```
-filters the log messages starting by `logs sent during last period` or `Non-zero metrics in the last`
+filters all logs having  `logs sent during last period` or `zero metrics in the last` in their message
+
+
+```
+logs_plain_filters_services:
+  dbeat:
+    - '.*logs sent during last period'
+    - '.*zero metrics in the last'
+```
+filters all logs coming from service `dbeat` and having `logs sent during last period` or `zero metrics in the last` in their message
 
 
 #### setting example
