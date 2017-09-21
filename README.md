@@ -2,11 +2,17 @@
 
 Welcome to elasticsearch-docker-beat
 
-This beat handle both docker logs and metrics in a Swarm context or not, adding meta data as stack, service names to logs/metrics.
-It listens Docker containers events and for each new started container, open logs and metrics streams to publish the events.
+This beat handle both docker logs and metrics in a Swarm context or not, adding meta data (stack, service names, ...) to the published data as possible.
 
-It publishes, memory, net, io, cpu metrics and all logs.
-Logs are the ones the containerized applications send to standard output.
+At startup, it opens data streams on all existing containers and listens Docker containers events.
+According to Docker events, it opens data streams on new started container or closes them on removed containers
+
+The published data are: memory, net, io, cpu metrics and logs.
+As a regular beat, it can publish the data to Elasticsearch or Logstash
+The logs are the ones the containerized applications send to standard output.
+
+Configuration allows to exclude containers, services, stacks, filter or group logs, add custom labels to logs/metrics, ...
+
 
 
 ## Getting Started with elasticsearch-docker-beat
@@ -296,30 +302,29 @@ will include in logs and metrics events the labels and their value: `axway-targe
 
 #### exclude containers
 
-to exclude specific containers, it's possible to use the following setting:
+to exclude specific containers, it's possible to use the following settings:
 
 ```
 excluded_containers:
   - pattern1
   - pattern2
 ```
-
 to exclude all containers having name maching with regexp pattern1 or pattern2
+
 
 ```
 excluded_services:
   - pattern1
   - pattern2
 ```
-
 to exclude all containers of the services having name maching with regexp pattern1 or pattern2
+
 
 ```
 excluded_stacks:
   - pattern1
   - pattern2
 ```
-
 to exclude all containers of the stacks having name maching with regexp pattern1 or pattern2
 
 
@@ -395,7 +400,7 @@ logs_plain_filters_containers:
   myContainer1:
     - pattern1
     - pattern2
- myContainer2:
+  myContainer2:
     - pattern3
 ```
 the logs coming from container having name `myContainer1` and which matches with `pattern1` or `pattern2` are filtered, the logs coming from container having name `myContainer2` and which matches with `pattern3` are filtered too.
@@ -407,7 +412,7 @@ logs_plain_filters_services:
   myServices1:
     - pattern1
     - pattern2
- myServices2:
+  myServices2:
     - pattern3
 ```
 the logs coming from containers belonging to service having name `myService1` and which matches with `pattern1` or `pattern2` are filtered, the logs coming from containers belonging to service having name `myService2` and which matches with `pattern3` are filtered too.
@@ -419,7 +424,7 @@ logs_plain_filters_stacks:
   myStack1:
     - pattern1
     - pattern2
- myStack2:
+  myStack2:
     - pattern3
 ```
 the logs coming from containers belonging to stack having name `myStack1` and which matches with `pattern1` or `pattern2` are filtered, the logs coming from containers belonging to stack having name `myStack2` and which matches with `pattern3` are filtered too.
