@@ -10,6 +10,7 @@ import (
 	"regexp"
 	"strings"
 	"time"
+	"encoding/json"
 
 	"github.com/docker/docker/api/types"
 	"github.com/elastic/beats/libbeat/common"
@@ -105,8 +106,13 @@ func (a *dbeat) startReadingLogs(ID string, data *ContainerData) {
 	}
 }
 
+func isJSON(s string) bool {
+	var js map[string]interface{}
+	return json.Unmarshal([]byte(s), &js) == nil
+}
+
 func (a *dbeat) isJSONFiltered(line string) bool {
-	if len(line) == 0 || line[0] != '{' {
+	if len(line) == 0 || !isJSON(line) {
 		return a.config.LogsJSONOnly
 	}
 	for _, filter := range a.JSONFiltersMap {
