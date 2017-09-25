@@ -107,12 +107,18 @@ func (a *dbeat) startReadingLogs(ID string, data *ContainerData) {
 }
 
 func isJSON(s string) bool {
+	trimmed := strings.TrimSpace(s)
+
+	if len(trimmed) < 2 || trimmed[0] != '{' || trimmed[len(trimmed)-1] != '}' {
+		return false
+	}
+
 	var js map[string]interface{}
-	return json.Unmarshal([]byte(s), &js) == nil
+	return json.Unmarshal([]byte(trimmed), &js) == nil
 }
 
 func (a *dbeat) isJSONFiltered(line string) bool {
-	if len(line) == 0 || !isJSON(line) {
+	if !isJSON(line) {
 		return a.config.LogsJSONOnly
 	}
 	for _, filter := range a.JSONFiltersMap {
