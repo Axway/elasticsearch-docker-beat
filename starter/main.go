@@ -18,6 +18,7 @@ func main() {
 // update conffile to add logstash setting (no need for elasticsearch setting)
 func udateConffile(logstashHosts string) error {
 	fileName := "/etc/beatconf/dbeat.yml"
+	os.Remove(fileName + ".new")
 	file, err := os.Create(fileName + ".new")
 	if err != nil {
 		fmt.Printf("Error creating new conffile for creation: %v\n", err)
