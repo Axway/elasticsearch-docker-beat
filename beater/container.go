@@ -171,17 +171,27 @@ func (a *dbeat) addContainer(ID string) {
 			data.name = strings.Replace(data.name, "/", "", 1)
 			data.name = strings.TrimSpace(data.name)
 			labels := inspect.Config.Labels
-			//data.serviceName = a.getMapValue(labels, "com.docker.swarm.service.name")
-			data.serviceName = strings.TrimPrefix(labels["com.docker.swarm.service.name"], labels["com.docker.stack.namespace"]+"_")
-			if data.serviceName == "" {
-				data.serviceName = "noService"
-			}
-			data.shortName = fmt.Sprintf("%s_%d", data.serviceName, data.pid)
-			data.serviceID = a.getMapValue(labels, "com.docker.swarm.service.id")
-			data.nodeID = a.getMapValue(labels, "com.docker.swarm.node.id")
-			data.stackName = a.getMapValue(labels, "com.docker.stack.namespace")
-			if data.stackName == "" {
-				data.stackName = "noStack"
+			if a.config.MappingOnContainerName {
+				list := strings.Split(data.name, "_")
+				if len(list) >= 2 {
+					data.stackName = list[0]
+					data.serviceName = list[1]
+				} else {
+					data.serviceName = "noService"
+					data.stackName = "noStack"
+				}
+			} else {
+				data.serviceName = strings.TrimPrefix(labels["com.docker.swarm.service.name"], labels["com.docker.stack.namespace"]+"_")
+				if data.serviceName == "" {
+					data.serviceName = "noService"
+				}
+				data.shortName = fmt.Sprintf("%s_%d", data.serviceName, data.pid)
+				data.serviceID = a.getMapValue(labels, "com.docker.swarm.service.id")
+				data.nodeID = a.getMapValue(labels, "com.docker.swarm.node.id")
+				data.stackName = a.getMapValue(labels, "com.docker.stack.namespace")
+				if data.stackName == "" {
+					data.stackName = "noStack"
+				}
 			}
 			data.hostIP = a.hostIP
 			data.hostname = a.hostname

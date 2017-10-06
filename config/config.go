@@ -32,6 +32,7 @@ type Config struct {
 	LogsPlainFiltersContainers map[string][]string          `config:"logs_plain_filters_containers"`
 	LogsPlainFiltersServices   map[string][]string          `config:"logs_plain_filters_services"`
 	LogsPlainFiltersStacks     map[string][]string          `config:"logs_plain_filters_stacks"`
+	MappingOnContainerName     bool                         `config:"mappingOnContainerName"`
 }
 
 // MLConfig multiline config struct
