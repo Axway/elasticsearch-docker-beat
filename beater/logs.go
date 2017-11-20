@@ -87,6 +87,7 @@ func (a *dbeat) startReadingLogs(ID string, data *ContainerData) {
       errNumber++
       time.Sleep(30 * time.Second)
     } else {
+      errNumber = 0
       if len(line) <= 39 {
         //fmt.Printf("invalid log: [%s]\n", line)
         continue
