@@ -4,6 +4,7 @@ import (
   "bufio"
   "context"
   "encoding/json"
+  "fmt"
   "io"
   "io/ioutil"
   "log"
@@ -33,7 +34,7 @@ func (a *dbeat) updateLogsStream() {
         log.Printf("Error opening logs stream on container: %s\n", data.name)
       } else {
         data.logsStream = stream
-        go a.startReadingLogs(ID, data)
+        go a.startReadingLogs(ID, data, lastTimeID)
       }
     } else if data.lastLog != "" && time.Now().Sub(data.lastLogTime).Seconds() >= 3 {
       a.publishEvent(data, data.lastLogTimestamp, data.lastLog)
@@ -71,13 +72,17 @@ func (a *dbeat) getLastTimeID(ID string) string {
 }
 
 // stream reading loop
-func (a *dbeat) startReadingLogs(ID string, data *ContainerData) {
+func (a *dbeat) startReadingLogs(ID string, data *ContainerData, lastTimeID string) {
   stream := data.logsStream
   reader := bufio.NewReader(stream)
   data.lastDateSaveTime = time.Now()
   log.Printf("start reading logs on container: %s\n", data.name)
   errNumber := 0
   data.logsReadError = false
+  skipTheFirst := false
+  if lastTimeID != "" {
+    skipTheFirst = true
+  }
   for {
     line, err := reader.ReadString('\n')
     if data.logsReadError {
@@ -96,8 +101,9 @@ func (a *dbeat) startReadingLogs(ID string, data *ContainerData) {
       time.Sleep(30 * time.Second)
     } else {
       errNumber = 0
-      if len(line) <= 39 {
+      if len(line) <= 39 || skipTheFirst {
         //fmt.Printf("invalid log: [%s]\n", line)
+        skipTheFirst = false
         continue
       }
       now := time.Now()
@@ -240,6 +246,9 @@ func (a *dbeat) publishEvent(data *ContainerData, timestamp time.Time, slog stri
   }
   for labelName, labelValue := range data.customLabelsMap {
     event[labelName] = labelValue
+  }
+  if data.name == "testapp" {
+    fmt.Printf("Log testapp: %s\n", slog)
   }
   a.nbLogs++
   data.lastLogAbsolute = time.Now()
