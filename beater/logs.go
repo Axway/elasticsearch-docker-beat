@@ -4,9 +4,9 @@ import (
   "bufio"
   "context"
   "encoding/json"
-  "fmt"
   "io"
   "io/ioutil"
+  "log"
   "path"
   "regexp"
   "strings"
@@ -24,22 +24,25 @@ func (a *dbeat) updateLogsStream() {
     if data.logsStream == nil || data.logsReadError {
       lastTimeID := a.getLastTimeID(ID)
       if lastTimeID == "" {
-        fmt.Printf("open logs stream from the begining on container %s\n", data.name)
+        log.Printf("open logs stream from the begining on container %s\n", data.name)
       } else {
-        fmt.Printf("open logs stream from time_id=%s on container %s\n", lastTimeID, data.name)
+        log.Printf("open logs stream from time_id=%s on container %s\n", lastTimeID, data.name)
       }
       stream, err := a.openLogsStream(ID, lastTimeID)
       if err != nil {
-        fmt.Printf("Error opening logs stream on container: %s\n", data.name)
+        log.Printf("Error opening logs stream on container: %s\n", data.name)
       } else {
         data.logsStream = stream
         go a.startReadingLogs(ID, data)
       }
-    } else {
-      if data.lastLog != "" && time.Now().Sub(data.lastLogTime).Seconds() >= 3 {
-        a.publishEvent(data, data.lastLogTimestamp, data.lastLog)
-        data.lastLog = ""
-      }
+    } else if data.lastLog != "" && time.Now().Sub(data.lastLogTime).Seconds() >= 3 {
+      a.publishEvent(data, data.lastLogTimestamp, data.lastLog)
+      data.lastLog = ""
+    } else if time.Now().Sub(data.lastLogAbsolute).Seconds() >= 600 {
+      log.Printf("no activity for 10 minutes, close and reopen logs stream on container %s\n", data.name)
+      data.logsReadError = true
+      data.logsStream.Close()
+      data.lastLogAbsolute = time.Now()
     }
   }
 }
@@ -72,13 +75,18 @@ func (a *dbeat) startReadingLogs(ID string, data *ContainerData) {
   stream := data.logsStream
   reader := bufio.NewReader(stream)
   data.lastDateSaveTime = time.Now()
-  fmt.Printf("start reading logs on container: %s\n", data.name)
+  log.Printf("start reading logs on container: %s\n", data.name)
   errNumber := 0
+  data.logsReadError = false
   for {
     line, err := reader.ReadString('\n')
+    if data.logsReadError {
+      log.Printf("force close logs stream on container %s\n", data.name)
+      return
+    }
     if err != nil {
       if errNumber >= 3 {
-        fmt.Printf("close logs stream on container %s (%v)\n", data.name, err)
+        log.Printf("close logs stream on container %s (%v)\n", data.name, err)
         data.logsReadError = true
         stream.Close()
         a.removeContainer(ID)
@@ -234,6 +242,7 @@ func (a *dbeat) publishEvent(data *ContainerData, timestamp time.Time, slog stri
     event[labelName] = labelValue
   }
   a.nbLogs++
+  data.lastLogAbsolute = time.Now()
   a.client.PublishEvent(event)
   a.periodicDateSave(data)
 }
