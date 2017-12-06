@@ -28,7 +28,7 @@ Prerequisite:
 
 Clone the repo in the directory $GOPATH/src/github.com/Axway/elasticsearch-docker-beat:
  - mkdir / cd $GOPATH/src/github.com/Axway
- - git clone git@github.com:Axway/elasticsearch-docker-beat
+ - git clone https://github.com/Axway/elasticsearch-docker-beat
  - cd elasticsearch-docker-beat
 
 
