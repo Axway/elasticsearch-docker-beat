@@ -12,7 +12,7 @@ As a regular beat, it can publish the data to Elasticsearch or Logstash
 The logs are the ones the containerized applications send to standard output.
 
 Configuration allows to exclude containers, services, stacks, filter or group logs, add custom labels to logs/metrics, ...
-.
+
 
 
 ## Getting Started with elasticsearch-docker-beat
