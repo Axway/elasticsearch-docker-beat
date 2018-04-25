@@ -292,7 +292,7 @@ func (a *dbeat) removeContainer(ID string) {
 	}
 	err := os.Remove(path.Join(containersDateDir, ID))
 	if err != nil {
-		log.Errorln(err)
+		log.Println(err)
 	}
 }
 
