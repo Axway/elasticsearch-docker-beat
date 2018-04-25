@@ -1,38 +1,38 @@
-# elasticsearch-docker-beat: 1.0.0
-
-Welcome to elasticsearch-docker-beat
+# elasticsearch-docker-beat
 
 This beat handle both docker logs and metrics in a Swarm context or not, adding meta data (stack, service names, ...) to the published data as possible.
 
-At startup, it opens data streams on all existing containers and listens Docker containers events.
-According to Docker events, it opens data streams on new started container or closes them on removed containers
+At startup, it opens data streams on all existing containers and listens to Docker containers events.
+Based on Docker events, it opens data streams on new containers or closes them on removed containers.
 
 The published data are: memory, net, io, cpu metrics and logs.
-As a regular beat, it can publish the data to Elasticsearch or Logstash
+As a regular beat, it can publish the data to Elasticsearch or Logstash.
 The logs are the ones the containerized applications send to standard output.
 
-Configuration allows to exclude containers, services, stacks, filter or group logs, add custom labels to logs/metrics, ...
-
-
+Configuration allows to exclude containers, services, stacks, filter or group logs, add custom labels to logs/metrics...
 
 ## Getting Started with elasticsearch-docker-beat
 
 ### Build
 
-Build the project is not mandatory, you can use directly the elasticsearch-docker-beat public image on docker hub see 'run' chapter, even with a dedicated configuration file, see 'configuration' chapter.
+Building the project is not mandatory, you can directly use the elasticsearch-docker-beat public image on Docker Hub see the `run` section, even with a dedicated configuration file, see `configuration` section.
 
 Prerequisite:
-- Docker version 17.03.0-ce min installed
-- golang 1.7 min installed
-- glide 0.12 min installed
+
+- Docker version 17.03.0-ce min
+- golang 1.7 min
+- glide 0.12 min
 
 Clone the repo in the directory $GOPATH/src/github.com/Axway/elasticsearch-docker-beat:
- - mkdir / cd $GOPATH/src/github.com/Axway
- - git clone https://github.com/Axway/elasticsearch-docker-beat
- - cd elasticsearch-docker-beat
 
+```
+mkdir -p $GOPATH/src/github.com/Axway; cd !$
+git clone https://github.com/Axway/elasticsearch-docker-beat
+cd elasticsearch-docker-beat
+```
 
-Before building if you can update default configuration using file `dbeat-confimage.yml`, see chapter `configuration` and then executing the command:
+Before building if you need to update the default configuration using file `dbeat-confimage.yml`, see section `configuration` and then execute the command:
+
 ```
 make update
 ```
@@ -43,43 +43,41 @@ To build the dbeat binary in the same folder, run the command below:
 make
 ```
 
-To create the dbeat image `axway/elasticsearch-docker-beat:latest`, run the command bellow:
+To create the dbeat image `axway/elasticsearch-docker-beat:latest`, run the command below:
 
 ```
 make create-image
 ```
 
-or directly use the docker hub image, pulling it:
+or pull the Docker Hub image:
+
 ```
 docker pull axway/elasticsearch-docker-beat:latest
 ```
 
-For test, you can create an image tagged `test` using the command:
+To test, you can create an image tagged `test` using the command:
 
 ```
 make create-image-test
 ```
+
 it creates the image `axway/elasticsearch-docker-beat:test` locally which can be used locally to test code updates.
-
-
-Available tags on docker hub are: latest, 0.0.2, 0.0.3
-
 
 ### Run in swarm context
 
-Create local swarm manager node, if not exist:
+Create a local swarm manager node if it does not exist:
 
 ```
 docker node inspect self > /dev/null 2>&1 || docker swarm inspect > /dev/null 2>&1 || (echo "> Initializing swarm" && docker swarm init --advertise-addr 127.0.0.1)
 ```
 
-Create network `aNetwork`, if not exist:
+Create network `aNetwork`, if it does not exist:
 
 ```
 docker network ls | grep aNetwork || (echo "> Creating overlay network 'aNetwork'" && docker network create -d overlay aNetwork)
 ```
 
-Create named volume `dbeat`, if not exist:
+Create named volume `dbeat`, if it does not exist:
 
 ```
 docker volume create dbeat
@@ -179,7 +177,7 @@ By default, this file is copied in the image at image build step, but it's possi
 
 #### Use an external configuration file
 
- to configure out of swarm context, it's possible to use an external configuration file adding a volume in the container, service or stack file definition
+ to configure out of swarm context, it's possible to use an external configuration file by adding a volume in the container, service or stack file definition
 
 ```
 volumes:
