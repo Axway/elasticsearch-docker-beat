@@ -25,13 +25,13 @@ func (a *dbeat) updateLogsStream() {
 		if data.logsStream == nil || data.logsReadError {
 			lastTimeID := a.getLastTimeID(ID)
 			if lastTimeID == "" {
-				log.Printf("open logs stream from the begining on container %s\n", data.name)
+				log.Printf("open logs stream from new container %s\n", data.name)
 			} else {
 				log.Printf("open logs stream from time_id=%s on container %s\n", lastTimeID, data.name)
 			}
 			stream, err := a.openLogsStream(ID, lastTimeID)
 			if err != nil {
-				log.Printf("Error opening logs stream on container: %s\n", data.name)
+				log.Errorf("opening logs stream on container: %s\n", data.name)
 			} else {
 				data.logsStream = stream
 				go a.startReadingLogs(ID, data, lastTimeID)
@@ -91,7 +91,7 @@ func (a *dbeat) startReadingLogs(ID string, data *ContainerData, lastTimeID stri
 		}
 		if err != nil {
 			if errNumber >= 3 {
-				log.Printf("close logs stream on container %s (%v)\n", data.name, err)
+				log.Errorf("close logs stream on container %s (%v)\n", data.name, err)
 				data.logsReadError = true
 				stream.Close()
 				a.removeContainer(ID)
