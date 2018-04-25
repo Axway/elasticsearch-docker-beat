@@ -1,5 +1,5 @@
-BEAT_NAME=dbeat
-BEAT_PATH=github.com/Axway/elasticsearch-docker-beat
+BEAT_NAME=elasticsearch-docker-beat
+BEAT_PATH=github.com/Axway/$(BEAT_NAME)
 BEAT_GOPATH=$(firstword $(subst :, ,${GOPATH}))
 BEAT_URL=https://${BEAT_PATH}
 SYSTEM_TESTS=false
@@ -9,8 +9,15 @@ GOPACKAGES=$(shell glide novendor)
 PREFIX?=.
 NOTICE_FILE=NOTICE
 
-# Path to the libbeat Makefile
--include $(ES_BEATS)/libbeat/scripts/Makefile
+BUILD := $(shell git rev-parse HEAD | cut -c1-8)
+LDFLAGS := -s -w
+
+# target from the libbeat Makefile, with the ldflags added
+# -include $(ES_BEATS)/libbeat/scripts/Makefile
+GOFILES = $(shell find beater -type f -name '*.go')
+GOFILES_ALL = $(GOFILES) $(shell find $(ES_BEATS) -type f -name '*.go')
+$(BEAT_NAME): $(GOFILES_ALL) ## @build build the beat application
+	go build -ldflags "-X=$(BEAT_PATH)/beater.Build=$(BUILD) $(LDFLAGS)"
 
 # Initial beat setup
 .PHONY: setup
@@ -26,12 +33,12 @@ copy-vendor:
 
 .PHONY: create-image
 create-image:
-	rm -f elasticsearch-docker-beat
-	docker build -t axway/elasticsearch-docker-beat:latest .
+	rm -f $(BEAT_NAME)
+	docker build -t axway/$(BEAT_NAME):latest .
 
 .PHONY: push-image
 push-image: create-image
-	docker save axway/elasticsearch-docker-beat -o dbeat.dimg
+	docker save axway/$(BEAT_NAME) -o dbeat.dimg
 	docker-machine scp dbeat.dimg default:/tmp/
 	docker-machine ssh default docker load -i /tmp/dbeat.dimg
 	rm dbeat.dimg
@@ -39,8 +46,8 @@ push-image: create-image
 
 .PHONY: create-image-test
 create-image-test:
-	rm -f elasticsearch-docker-beat
-	docker build -t axway/elasticsearch-docker-beat:test .
+	rm -f $(BEAT_NAME)
+	docker build -t axway/$(BEAT_NAME):test .
 
 .PHONY: update-deps
 update-deps:
