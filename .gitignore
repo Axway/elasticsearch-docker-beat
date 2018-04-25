@@ -3,5 +3,6 @@
 
 .DS_Store
 /dbeat
+/elasticsearch-docker-beat
 /dbeat.test
 *.pyc
