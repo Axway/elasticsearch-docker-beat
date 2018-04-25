@@ -2,31 +2,30 @@ package main
 
 import (
 	"bufio"
-	"fmt"
+	"log"
 	"os"
 	"strings"
 )
 
 func main() {
 	ev := os.Getenv("LOGSTASH_HOSTS")
-	if err := udateConffile(ev); err != nil {
-		fmt.Printf("Error updating configuration file: %v\n", err)
-		os.Exit(1)
+	if err := updateConffile(ev); err != nil {
+		log.Fatalf("Error updating configuration file: %v\n", err)
 	}
 }
 
 // update conffile to add logstash setting (no need for elasticsearch setting)
-func udateConffile(logstashHosts string) error {
+func updateConffile(logstashHosts string) error {
 	fileName := "/etc/beatconf/dbeat.yml"
 	os.Remove(fileName + ".new")
 	file, err := os.Create(fileName + ".new")
 	if err != nil {
-		fmt.Printf("Error creating new conffile for creation: %v\n", err)
+		log.Printf("Error creating new conffile: %v\n", err)
 		return err
 	}
 	filetpt, err := os.Open(fileName)
 	if err != nil {
-		fmt.Printf("Error opening conffile: %s : %v\n", fileName, err)
+		log.Printf("Error opening conffile: %s - %v\n", fileName, err)
 		return err
 	}
 	scanner := bufio.NewScanner(filetpt)
@@ -84,11 +83,11 @@ func udateConffile(logstashHosts string) error {
 			}
 		}
 		//nbLine++
-		//fmt.Printf("%d:%s\n", nbLine, line)
+		//log.Printf("%d:%s\n", nbLine, line)
 		file.WriteString(line + "\n")
 	}
 	if err = scanner.Err(); err != nil {
-		fmt.Printf("Error reading conffile: %s %v\n", fileName, err)
+		log.Printf("Error reading conffile: %s - %v\n", fileName, err)
 		file.Close()
 		return err
 	}
@@ -96,7 +95,7 @@ func udateConffile(logstashHosts string) error {
 	os.Remove(fileName)
 	err2 := os.Rename(fileName+".new", fileName)
 	if err2 != nil {
-		fmt.Printf("Error renaming conffile .new: %v\n", err)
+		log.Printf("Error removing .new suffix of conffile: %v\n", err)
 		return err
 	}
 	return nil
