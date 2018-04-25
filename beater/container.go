@@ -290,7 +290,10 @@ func (a *dbeat) removeContainer(ID string) {
 		log.Println("remove container", data.name)
 		delete(a.containers, ID)
 	}
-	os.Remove(path.Join(containersDateDir, ID))
+	err := os.Remove(path.Join(containersDateDir, ID))
+	if err != nil {
+		log.Errorln(err)
+	}
 }
 
 //Update container status and health
