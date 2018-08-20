@@ -10,9 +10,9 @@ ARG LDFLAGS="-s -w"
 RUN make LDFLAGS="${LDFLAGS}"
 RUN go build -ldflags "${LDFLAGS}" -o ./updater /go/src/github.com/Axway/elasticsearch-docker-beat/starter/main.go
 
-FROM alpine:3.7
+FROM alpine:3.8
 
-RUN apk update && apk upgrade && apk add curl && rm -rf /var/cache/apk/*
+RUN apk --no-cache add curl
 COPY --from=BUILD /go/src/github.com/Axway/elasticsearch-docker-beat/elasticsearch-docker-beat /etc/dbeat/dbeat
 COPY --from=BUILD /go/src/github.com/Axway/elasticsearch-docker-beat/updater /etc/dbeat/updater
 COPY ./start.sh /etc/dbeat/start.sh

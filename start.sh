@@ -6,7 +6,7 @@ fi
 PROGRAM=/etc/dbeat/dbeat
 set -- $PROGRAM "$@"
 cd /etc/dbeat
-echo "Starting conffile updater"
+echo "Starting configuration file updater"
 ./updater || exit 1
 cat /etc/beatconf/dbeat.yml
 echo "Starting dbeat: $@"

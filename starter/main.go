@@ -2,6 +2,8 @@ package main
 
 import (
 	"bufio"
+	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"strings"
@@ -17,17 +19,22 @@ func main() {
 // update conffile to add logstash setting (no need for elasticsearch setting)
 func updateConffile(logstashHosts string) error {
 	fileName := "/etc/beatconf/dbeat.yml"
-	os.Remove(fileName + ".new")
-	file, err := os.Create(fileName + ".new")
+	filetpt, err := os.OpenFile(fileName, os.O_RDWR, 0666)
 	if err != nil {
-		log.Printf("Error creating new conffile: %v\n", err)
-		return err
+		if os.IsPermission(err) {
+			// it may a ConfigMap, or any protected file, we shouldn't fail
+			fmt.Printf("warning: %s is not writable, it will be untouched\n", fileName)
+			return nil
+		}
+		log.Println(err.Error())
+		return fmt.Errorf("couldn't open configuration file (%s)\n", fileName)
 	}
-	filetpt, err := os.Open(fileName)
+	file, err := ioutil.TempFile("", "dbeat.yml")
 	if err != nil {
-		log.Printf("Error opening conffile: %s - %v\n", fileName, err)
-		return err
+		log.Println(err.Error())
+		return fmt.Errorf("failed to create temporary configuration file (%s)", file.Name())
 	}
+	defer os.Remove(file.Name())
 	scanner := bufio.NewScanner(filetpt)
 	elasticsearch := false
 	logstash := false
@@ -87,15 +94,17 @@ func updateConffile(logstashHosts string) error {
 		file.WriteString(line + "\n")
 	}
 	if err = scanner.Err(); err != nil {
-		log.Printf("Error reading conffile: %s - %v\n", fileName, err)
+		log.Printf("Error reading configuration file: %s - %v\n", fileName, err)
 		file.Close()
 		return err
 	}
-	file.Close()
+	if err = file.Close(); err != nil {
+		log.Fatal(err)
+	}
 	os.Remove(fileName)
-	err2 := os.Rename(fileName+".new", fileName)
-	if err2 != nil {
-		log.Printf("Error removing .new suffix of conffile: %v\n", err)
+	err = os.Rename(file.Name(), fileName)
+	if err != nil {
+		log.Printf("Error renaming configuration file: %v\n", err)
 		return err
 	}
 	return nil
