@@ -21,7 +21,7 @@ func updateConffile(logstashHosts string) error {
 	fileName := "/etc/beatconf/dbeat.yml"
 	filetpt, err := os.OpenFile(fileName, os.O_RDWR, 0666)
 	if err != nil {
-		if os.IsPermission(err) {
+		if os.IsPermission(err) || strings.HasSuffix(err.Error(), "read-only file system") {
 			// it may a ConfigMap, or any protected file, we shouldn't fail
 			fmt.Printf("warning: %s is not writable, it will be untouched\n", fileName)
 			return nil
